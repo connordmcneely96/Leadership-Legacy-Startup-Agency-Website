@@ -6,7 +6,7 @@ compatibility_date = "2025-01-01"
 account_id = "d3dbdd3e1ebbc28edf0ce756d9841490"
 
 # Node.js compatibility for Next.js and Workers
-node_compat = true
+compatibility_flags = ["nodejs_compat"]
 
 [build]
 command = "npm run build"
