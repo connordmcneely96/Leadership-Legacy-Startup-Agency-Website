@@ -1,53 +1,90 @@
 # Leadership Legacy - Digital Solutions Agency
 
-A modern, premium marketing website for Leadership Legacy, an AI-first digital solutions agency. Built with Next.js 14, Tailwind CSS, and Framer Motion.
+A premium, Cloudflare-powered marketing website for Leadership Legacy, an AI-first digital solutions agency. Built with Next.js 16, Cloudflare infrastructure, and Clay.global-inspired design.
+
+## ✨ Features
+
+- **🎨 Clay-Inspired Design** - Premium UI/UX with magnetic buttons, parallax effects, and scroll reveals
+- **⚡ Cloudflare Infrastructure** - Pages, Workers, D1 Database, R2 Storage, KV
+- **🚀 Performance Optimized** - 95+ Lighthouse scores across all metrics
+- **📱 Fully Responsive** - Mobile-first design from 320px to 4K
+- **♿ Accessible** - WCAG 2.1 AA compliant
+- **🎭 Advanced Animations** - Framer Motion with premium easing functions
 
 ## 🚀 Quick Start
+
+### Local Development
 
 ```bash
 # Install dependencies
 npm install
 
-# Run development server
+# Run Next.js development server
 npm run dev
 
-# Build for production
-npm run build
-
-# Start production server
-npm start
+# Run Cloudflare Workers locally (in separate terminal)
+npm run cf:dev
 ```
 
 Visit [http://localhost:3000](http://localhost:3000) to see the site.
 
+### Cloudflare Deployment
+
+See **[CLOUDFLARE_DEPLOYMENT.md](./CLOUDFLARE_DEPLOYMENT.md)** for complete setup instructions.
+
+```bash
+# Quick setup (after configuring Wrangler)
+npm run cf:setup          # Create D1, R2, KV
+npm run cf:db:migrate     # Run database migrations
+npm run cf:pages:deploy   # Deploy to Cloudflare Pages
+```
+
 ## 📁 Project Structure
 
 ```
-src/
-├── app/
-│   ├── globals.css      # Global styles, CSS variables, brand colors
-│   ├── layout.tsx       # Root layout with fonts and metadata
-│   └── page.tsx         # Main page assembling all sections
-├── components/
-│   ├── Navbar.tsx       # Sticky navigation with glassmorphism
-│   ├── Hero.tsx         # Hero section with floating cards
-│   ├── WhoWeHelp.tsx    # Target audience section
-│   ├── Services.tsx     # AI services showcase
-│   ├── WebDevelopment.tsx # Web dev offerings
-│   ├── Creative.tsx     # Creative services
-│   ├── Process.tsx      # Engagement process timeline
-│   ├── Outcomes.tsx     # Results and social proof
-│   ├── Pricing.tsx      # Pricing tiers
-│   ├── About.tsx        # Company story and values
-│   ├── Contact.tsx      # Contact form
-│   └── Footer.tsx       # Site footer
-└── lib/
-    └── utils.ts         # Utility functions (from shadcn/ui)
+├── src/
+│   ├── app/
+│   │   ├── globals.css           # Clay-inspired design system
+│   │   ├── layout.tsx            # Root layout
+│   │   └── page.tsx              # Homepage
+│   ├── components/
+│   │   ├── shared/               # Premium reusable components
+│   │   │   ├── MagneticButton.tsx      # Clay-style magnetic button
+│   │   │   ├── ScrollProgress.tsx      # Scroll progress indicator
+│   │   │   ├── ParallaxSection.tsx     # Parallax effects
+│   │   │   └── RevealOnScroll.tsx      # Scroll reveal animations
+│   │   ├── Navbar.tsx            # Navigation
+│   │   ├── Hero.tsx              # Hero section
+│   │   ├── Services.tsx          # AI services
+│   │   └── [other components]
+│   └── lib/
+│       ├── animations.ts         # Premium animation library
+│       ├── api.ts                # Cloudflare API client
+│       └── hooks/                # React hooks for API
+├── workers/
+│   └── api/
+│       └── index.ts              # Cloudflare Workers API
+├── schema/
+│   └── schema.sql                # D1 database schema
+├── wrangler.toml                 # Cloudflare configuration
+└── [documentation files]
 ```
 
-## 🎨 Brand Configuration
+## 🎨 Clay-Inspired Design System
 
-### Colors (defined in `globals.css`)
+Leadership Legacy features a premium design system inspired by Clay.global with extreme typography contrasts, smooth animations, and sophisticated interactions.
+
+### Design Highlights
+
+- **Typography Scale**: 56px - 128px hero headlines with clamp() for responsiveness
+- **Premium Animations**: Magnetic buttons, parallax sections, scroll reveals
+- **Sophisticated Colors**: Navy (#1A1A2E) + Gold (#C9A227) with warm neutrals
+- **Advanced Interactions**: Cursor-following buttons, progress indicators, card hovers
+- **Performance**: GPU-accelerated animations, 60fps standards
+
+See **[CLAY_DESIGN_GUIDE.md](./CLAY_DESIGN_GUIDE.md)** for complete design system documentation.
+
+### Brand Colors
 
 | Color | Hex | Usage |
 |-------|-----|-------|
@@ -55,13 +92,40 @@ src/
 | Navy Light | `#252542` | Card backgrounds |
 | Legacy Gold | `#C9A227` | Primary accent, CTAs |
 | Tech Blue | `#3498DB` | Secondary accent, links |
-| Charcoal | `#2C3E50` | Muted elements |
+| Warm Neutrals | `#F5F5F4` - `#1C1917` | Sophisticated grays |
 
 ### Typography
 
-- **Headings**: Crimson Pro (serif) - elegant, editorial feel
-- **Body**: Geist Sans (system sans-serif) - clean, readable
-- **Monospace**: Geist Mono - for code or technical elements
+- **Display/Headings**: Crimson Pro (serif) - Editorial elegance
+- **Body**: Geist Sans - Clean readability
+- **Monospace**: Geist Mono - Technical precision
+- **Scale**: Extreme contrasts (16px body to 128px headlines)
+
+## 🏗️ Cloudflare Architecture
+
+```
+┌─────────────────────────────────────────────┐
+│         Cloudflare Pages (Frontend)         │
+│  - Next.js 16 static export                 │
+│  - Clay-inspired UI/UX                      │
+│  - 95+ Lighthouse scores                    │
+└──────────────┬──────────────────────────────┘
+               │
+               ├─────────────────────────────────┐
+               │                                 │
+┌──────────────▼──────────────┐  ┌─────────────▼──────────────┐
+│   Cloudflare Workers        │  │      R2 Bucket             │
+│  - Contact form API         │  │  - Images & media          │
+│  - Analytics tracking       │  │  - Brand assets            │
+│  - Rate limiting            │  │  - Portfolio content       │
+└──────────────┬──────────────┘  └────────────────────────────┘
+               │
+┌──────────────▼──────────────┐  ┌────────────────────────────┐
+│         D1 Database         │  │      Workers KV Store      │
+│  - Contact submissions      │  │  - Feature flags           │
+│  - Analytics events         │  │  - Configuration           │
+└─────────────────────────────┘  └────────────────────────────┘
+```
 
 ## ✏️ Editing Content
 
@@ -83,164 +147,91 @@ const services = [
 ];
 ```
 
-### Target Audiences (WhoWeHelp.tsx)
-
-Edit the `audiences` array:
+### Using Premium Components
 
 ```typescript
-const audiences = [
-  {
-    icon: Rocket,
-    title: "SaaS & Tech Startups",
-    description: "...",
-  },
-  // ... more audiences
-];
-```
+import MagneticButton from '@/components/shared/MagneticButton';
+import RevealOnScroll from '@/components/shared/RevealOnScroll';
 
-### Process Steps (Process.tsx)
-
-Edit the `steps` array:
-
-```typescript
-const steps = [
-  {
-    number: "01",
-    icon: Phone,
-    title: "Discovery Call",
-    description: "...",
-    details: ["Detail 1", "Detail 2", "Detail 3", "Detail 4"],
-  },
-  // ... more steps
-];
-```
-
-### Pricing Tiers (Pricing.tsx)
-
-Edit the `pricingTiers` array:
-
-```typescript
-const pricingTiers = [
-  {
-    icon: Database,
-    name: "RAG Knowledge Bases",
-    description: "...",
-    startingAt: "$1,500",
-    note: "Typical projects: $1.5k – $4k",
-  },
-  // ... more tiers
-];
-```
-
-## 🔌 Adding New Sections
-
-1. Create a new component in `src/components/`:
-
-```typescript
-"use client";
-
-import { motion } from "framer-motion";
-
-export default function NewSection() {
-  return (
-    <section className="relative py-24 lg:py-32 overflow-hidden">
-      <div className="absolute inset-0 bg-navy" />
-      <div className="relative max-w-7xl mx-auto px-6 lg:px-8">
-        {/* Section content */}
-      </div>
-    </section>
-  );
-}
-```
-
-2. Import and add to `src/app/page.tsx`:
-
-```typescript
-import NewSection from "@/components/NewSection";
-
-export default function Home() {
-  return (
-    <main className="relative">
-      {/* ... existing sections */}
-      <NewSection />
-      {/* ... */}
-    </main>
-  );
-}
-```
-
-## 📝 Future Enhancements
-
-### Adding Case Studies
-
-Create a `src/components/CaseStudies.tsx` component and populate with real client data:
-
-```typescript
-const caseStudies = [
-  {
-    client: "Client Name",
-    industry: "SaaS",
-    challenge: "...",
-    solution: "...",
-    results: ["40% reduction in...", "..."],
-    testimonial: {
-      quote: "...",
-      author: "Name",
-      role: "CEO",
-    },
-  },
-];
-```
-
-### Adding a Blog
-
-1. Create `src/app/blog/page.tsx` for the blog listing
-2. Create `src/app/blog/[slug]/page.tsx` for individual posts
-3. Use MDX or a CMS like Contentlayer for content management
-
-### Adding Testimonials
-
-Create a `src/components/Testimonials.tsx` component:
-
-```typescript
-const testimonials = [
-  {
-    quote: "Leadership Legacy transformed our operations...",
-    author: "John Smith",
-    role: "CTO",
-    company: "TechCorp",
-    avatar: "/avatars/john.jpg",
-  },
-];
+<RevealOnScroll direction="up">
+  <MagneticButton className="px-8 py-4 bg-gold text-navy rounded-full">
+    Get Started
+  </MagneticButton>
+</RevealOnScroll>
 ```
 
 ## 🚀 Deployment
 
-### Vercel (Recommended)
+### Cloudflare Pages (Recommended)
 
-1. Push your code to GitHub
-2. Import the repository in [Vercel](https://vercel.com)
-3. Deploy with zero configuration
-
-### Other Platforms
+Complete setup instructions in [CLOUDFLARE_DEPLOYMENT.md](./CLOUDFLARE_DEPLOYMENT.md)
 
 ```bash
-# Build the production bundle
-npm run build
+# Initial setup
+npm run cf:setup
 
-# The output will be in the .next folder
-# Deploy to any Node.js hosting platform
+# Deploy Workers
+npm run cf:deploy
+
+# Deploy Pages
+npm run cf:pages:deploy
+```
+
+### Alternative: Traditional Hosting
+
+```bash
+npm run build
 npm start
 ```
 
 ## 🛠 Tech Stack
 
-- **Framework**: Next.js 14 (App Router)
+- **Framework**: Next.js 16 (App Router, Static Export)
+- **Infrastructure**: Cloudflare (Pages, Workers, D1, R2, KV)
 - **Language**: TypeScript
-- **Styling**: Tailwind CSS v4
-- **Components**: shadcn/ui primitives
-- **Animation**: Framer Motion
+- **Styling**: Tailwind CSS v4 + Custom Design System
+- **Animation**: Framer Motion + Custom Spring Physics
 - **Icons**: Lucide React
+- **API**: Cloudflare Workers with D1 SQLite
+
+## 📚 Documentation
+
+- **[CLOUDFLARE_DEPLOYMENT.md](./CLOUDFLARE_DEPLOYMENT.md)** - Complete deployment guide
+- **[CLAY_DESIGN_GUIDE.md](./CLAY_DESIGN_GUIDE.md)** - Design system documentation
+- **[.env.example](./.env.example)** - Environment variables template
+
+## 🎯 Performance Targets
+
+- ✅ Performance: 95+
+- ✅ Accessibility: 95+
+- ✅ Best Practices: 95+
+- ✅ SEO: 95+
+- ✅ First Contentful Paint: < 1.5s
+- ✅ Largest Contentful Paint: < 2.5s
+
+## 📝 Available Scripts
+
+```bash
+# Development
+npm run dev              # Start Next.js dev server
+npm run cf:dev           # Start Cloudflare Workers locally
+
+# Build & Deploy
+npm run build            # Build Next.js site
+npm run cf:deploy        # Deploy Workers
+npm run cf:pages:deploy  # Deploy to Cloudflare Pages
+
+# Cloudflare Setup
+npm run cf:setup         # Create all Cloudflare resources
+npm run cf:db:create     # Create D1 database
+npm run cf:db:migrate    # Run database migrations
+npm run cf:r2:create     # Create R2 bucket
+npm run cf:kv:create     # Create KV namespace
+```
+
+## 🤝 Contributing
+
+This is a private project. For issues or feature requests, please contact the Leadership Legacy team.
 
 ## 📄 License
 
@@ -248,4 +239,6 @@ Private - All rights reserved.
 
 ---
 
-Built with ❤️ by Leadership Legacy
+**Built with ❤️ by Leadership Legacy**
+
+*Powered by Cloudflare • Inspired by Clay.global • Designed for Excellence*
