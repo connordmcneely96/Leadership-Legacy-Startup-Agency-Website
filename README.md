@@ -39,6 +39,8 @@ npm run cf:db:migrate     # Run database migrations
 npm run cf:pages:deploy   # Deploy to Cloudflare Pages
 ```
 
+> Automated? A GitHub Action (`.github/workflows/cloudflare.yml`) will build and deploy the Pages site and Worker API whenever you push to `main` once you set the Cloudflare secrets described in the deployment guide.
+
 ## 📁 Project Structure
 
 ```

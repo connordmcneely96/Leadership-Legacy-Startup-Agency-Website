@@ -33,6 +33,19 @@ Before starting, ensure you have:
 
 ## Initial Cloudflare Setup
 
+### 0. Configure GitHub Action (optional, recommended)
+
+A ready-to-use CI workflow lives at `.github/workflows/cloudflare.yml`. Add the following repository secrets so pushes to `main` automatically build the static Next.js export, deploy the Worker API, and publish Cloudflare Pages:
+
+- `CLOUDFLARE_API_TOKEN` – API token with `Workers` + `Pages` access
+- `CLOUDFLARE_ACCOUNT_ID` – Your Cloudflare account ID (`d3dbdd3e1ebbc28edf0ce756d9841490`)
+- `CF_D1_DATABASE_ID` – The D1 database UUID created below
+- `CF_KV_NAMESPACE_ID` – The KV namespace ID created below
+- `CF_PAGES_PROJECT` – The Pages project name (defaults to `leadership-legacy` if omitted)
+- `NEXT_PUBLIC_API_URL` – Public API base (e.g. `https://leadership-legacy.YOUR_SUBDOMAIN.workers.dev`)
+
+Local environment variables are documented in `.env.example` (commit-safe).
+
 ### 1. Install Dependencies
 
 ```bash

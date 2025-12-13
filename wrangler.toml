@@ -10,12 +10,13 @@ node_compat = true
 
 [build]
 command = "npm run build"
+pages_build_output_dir = "out"
 
 # D1 Database - Contact submissions and analytics
 [[d1_databases]]
 binding = "DB"
 database_name = "leadership-legacy-db"
-database_id = "" # Will be populated after creation
+database_id = "D1_DATABASE_ID_PLACEHOLDER" # Set via deployment secrets
 
 # R2 Bucket - Media assets
 [[r2_buckets]]
@@ -25,11 +26,12 @@ bucket_name = "leadership-legacy-assets"
 # KV Namespace - Configuration and feature flags
 [[kv_namespaces]]
 binding = "CONFIG"
-id = "" # Will be populated after creation
+id = "KV_NAMESPACE_ID_PLACEHOLDER" # Set via deployment secrets
 
 # Environment variables
 [vars]
 ENVIRONMENT = "development"
+NEXT_PUBLIC_API_URL = "https://leadership-legacy.YOUR_SUBDOMAIN.workers.dev"
 
 # Production environment
 [env.production]
