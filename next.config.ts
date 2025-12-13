@@ -12,9 +12,6 @@ const nextConfig: NextConfig = {
     unoptimized: true, // Cloudflare will handle optimization via Polish
   },
 
-  /* Performance Optimizations */
-  swcMinify: true,
-
   /* Asset Prefix for R2 (can be configured later) */
   // assetPrefix: process.env.NEXT_PUBLIC_ASSET_PREFIX,
 

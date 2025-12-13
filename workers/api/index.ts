@@ -1,6 +1,13 @@
 // Main Cloudflare Worker - API Router
 // Handles all API requests for Leadership Legacy
 
+import type {
+  D1Database,
+  R2Bucket,
+  KVNamespace,
+  ExecutionContext,
+} from "@cloudflare/workers-types";
+
 export interface Env {
   DB: D1Database;
   ASSETS: R2Bucket;
