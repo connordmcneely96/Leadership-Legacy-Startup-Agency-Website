@@ -6,6 +6,7 @@ import { Menu, X, Sparkles } from "lucide-react";
 import Link from "next/link";
 
 const navLinks = [
+  { name: "Dashboard", href: "/dashboard" },
   { name: "Services", href: "#services" },
   { name: "Process", href: "#process" },
   { name: "Pricing", href: "#pricing" },
