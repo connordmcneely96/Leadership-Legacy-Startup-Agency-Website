@@ -23,12 +23,12 @@ echo ""
 
 # Step 2: Create D1 Database
 echo -e "${BLUE}Step 2: Creating D1 Database...${NC}"
-echo "Running: wrangler d1 create leadership-legacy-db"
-D1_OUTPUT=$(wrangler d1 create leadership-legacy-db 2>&1 || echo "ALREADY_EXISTS")
+echo "Running: npx wrangler d1 create leadership-legacy-db"
+D1_OUTPUT=$(npx wrangler d1 create leadership-legacy-db 2>&1 || echo "ALREADY_EXISTS")
 
 if [[ $D1_OUTPUT == *"ALREADY_EXISTS"* ]] || [[ $D1_OUTPUT == *"already exists"* ]]; then
     echo -e "${YELLOW}⚠ Database already exists, fetching existing ID...${NC}"
-    D1_ID=$(wrangler d1 list | grep "leadership-legacy-db" | awk '{print $2}')
+    D1_ID=$(npx wrangler d1 list | grep "leadership-legacy-db" | awk '{print $2}')
 else
     D1_ID=$(echo "$D1_OUTPUT" | grep -oP 'database_id = "\K[^"]+' || echo "")
 fi
@@ -38,19 +38,19 @@ echo ""
 
 # Step 3: Create R2 Bucket
 echo -e "${BLUE}Step 3: Creating R2 Bucket...${NC}"
-echo "Running: wrangler r2 bucket create leadership-legacy-assets"
-wrangler r2 bucket create leadership-legacy-assets 2>&1 || echo "Bucket may already exist"
+echo "Running: npx wrangler r2 bucket create leadership-legacy-assets"
+npx wrangler r2 bucket create leadership-legacy-assets 2>&1 || echo "Bucket may already exist"
 echo -e "${GREEN}✓ R2 Bucket created${NC}"
 echo ""
 
 # Step 4: Create KV Namespace
 echo -e "${BLUE}Step 4: Creating KV Namespace...${NC}"
-echo "Running: wrangler kv:namespace create LEADERSHIP_CONFIG"
-KV_OUTPUT=$(wrangler kv:namespace create LEADERSHIP_CONFIG 2>&1 || echo "ALREADY_EXISTS")
+echo "Running: npx wrangler kv:namespace create LEADERSHIP_CONFIG"
+KV_OUTPUT=$(npx wrangler kv:namespace create LEADERSHIP_CONFIG 2>&1 || echo "ALREADY_EXISTS")
 
 if [[ $KV_OUTPUT == *"ALREADY_EXISTS"* ]] || [[ $KV_OUTPUT == *"already exists"* ]]; then
     echo -e "${YELLOW}⚠ KV Namespace already exists, fetching existing ID...${NC}"
-    KV_ID=$(wrangler kv:namespace list | grep "LEADERSHIP_CONFIG" | grep -oP 'id = "\K[^"]+' || echo "")
+    KV_ID=$(npx wrangler kv:namespace list | grep "LEADERSHIP_CONFIG" | grep -oP 'id = "\K[^"]+' || echo "")
 else
     KV_ID=$(echo "$KV_OUTPUT" | grep -oP 'id = "\K[^"]+' || echo "")
 fi
@@ -74,8 +74,8 @@ echo ""
 
 # Step 6: Run database migration
 echo -e "${BLUE}Step 6: Running database migration...${NC}"
-echo "Running: wrangler d1 execute leadership-legacy-db --file=./schema/full-schema.sql"
-wrangler d1 execute leadership-legacy-db --file=./schema/full-schema.sql
+echo "Running: npx wrangler d1 execute leadership-legacy-db --file=./schema/full-schema.sql"
+npx wrangler d1 execute leadership-legacy-db --file=./schema/full-schema.sql
 echo -e "${GREEN}✓ Database schema migrated${NC}"
 echo ""
 
@@ -93,22 +93,22 @@ echo ""
 echo -e "${BLUE}Step 8: Setting secrets...${NC}"
 echo -e "${YELLOW}You'll need to set the following secrets manually:${NC}"
 echo ""
-echo "wrangler secret put JWT_SECRET"
+echo "npx wrangler secret put JWT_SECRET"
 echo "  Suggested value: $(openssl rand -base64 32)"
 echo ""
-echo "wrangler secret put STRIPE_SECRET_KEY"
+echo "npx wrangler secret put STRIPE_SECRET_KEY"
 echo "  Get from: https://dashboard.stripe.com/apikeys"
 echo ""
-echo "wrangler secret put STRIPE_WEBHOOK_SECRET"
+echo "npx wrangler secret put STRIPE_WEBHOOK_SECRET"
 echo "  Get from: https://dashboard.stripe.com/webhooks"
 echo ""
-echo "wrangler secret put OPENAI_API_KEY"
+echo "npx wrangler secret put OPENAI_API_KEY"
 echo "  Get from: https://platform.openai.com/api-keys"
 echo ""
-echo "wrangler secret put ANTHROPIC_API_KEY"
+echo "npx wrangler secret put ANTHROPIC_API_KEY"
 echo "  Get from: https://console.anthropic.com/settings/keys"
 echo ""
-echo "wrangler secret put RESEND_API_KEY"
+echo "npx wrangler secret put RESEND_API_KEY"
 echo "  Get from: https://resend.com/api-keys"
 echo ""
 echo -e "${YELLOW}Press Enter to continue after setting secrets...${NC}"
@@ -116,8 +116,8 @@ read
 
 # Step 9: Deploy Workers
 echo -e "${BLUE}Step 9: Deploying Workers to Cloudflare...${NC}"
-echo "Running: wrangler deploy"
-wrangler deploy
+echo "Running: npx wrangler deploy"
+npx wrangler deploy
 echo -e "${GREEN}✓ Workers deployed${NC}"
 echo ""
 
@@ -125,7 +125,7 @@ echo ""
 echo -e "${BLUE}Step 10: Deploy Pages (optional)...${NC}"
 echo "To deploy the frontend to Cloudflare Pages, run:"
 echo "  npm run build"
-echo "  wrangler pages deploy out"
+echo "  npx wrangler pages deploy out"
 echo ""
 
 # Success message
