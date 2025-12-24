@@ -4,7 +4,22 @@ import dynamic from "next/dynamic"
 import type { ComponentType } from "react"
 import { useEffect, useMemo, useState } from "react"
 import { useSearchParams } from "next/navigation"
-import { Briefcase, Code2, LayoutPanelLeft, Loader2 } from "lucide-react"
+import {
+  Briefcase,
+  Code2,
+  FileText,
+  Gauge,
+  LayoutPanelLeft,
+  Loader2,
+  Settings,
+  Users,
+  Workflow,
+  Database,
+  ClipboardList,
+  Hammer,
+  Server,
+  Cloud,
+} from "lucide-react"
 import { cn } from "@/lib/utils"
 
 const CurrentDashboard = dynamic(() => import("@/components/dashboard/tabs/CurrentDashboard"), {
@@ -25,22 +40,41 @@ const tabRegistry: Record<
     label: string
     description: string
     icon: ComponentType<{ className?: string }>
+    menu: { id: string; label: string; icon: ComponentType<{ className?: string }> }[]
   }
 > = {
   current: {
     label: "Overview",
     description: "Existing dashboard content and client highlights",
     icon: LayoutPanelLeft,
+    menu: [],
   },
   business: {
     label: "Business Ops",
     description: "Clients, projects, invoices, and financial analytics",
     icon: Briefcase,
+    menu: [
+      { id: "clients", label: "Clients", icon: Users },
+      { id: "projects", label: "Projects", icon: Workflow },
+      { id: "invoices", label: "Invoices", icon: FileText },
+      { id: "proposals", label: "Proposals", icon: ClipboardList },
+      { id: "reports", label: "Reports", icon: Gauge },
+      { id: "team", label: "Team", icon: Users },
+      { id: "settings", label: "Settings", icon: Settings },
+    ],
   },
   developer: {
     label: "Dev Metrics",
     description: "Infrastructure health, deployments, and performance",
     icon: Code2,
+    menu: [
+      { id: "deployments", label: "Deployments", icon: Hammer },
+      { id: "workers", label: "Workers", icon: Server },
+      { id: "ai", label: "AI Gateway", icon: Cloud },
+      { id: "projects", label: "Projects", icon: Workflow },
+      { id: "storage", label: "Storage", icon: Database },
+      { id: "settings", label: "Settings", icon: Settings },
+    ],
   },
 }
 
@@ -57,19 +91,26 @@ export default function DashboardTabs() {
   const searchParams = useSearchParams()
   const [activeTab, setActiveTab] = useState<TabId>("current")
   const [mountedTabs, setMountedTabs] = useState<Set<TabId>>(new Set(["current"]))
+  const [activeSection, setActiveSection] = useState<string | null>(null)
   const [isHydrated, setIsHydrated] = useState(false)
 
   useEffect(() => {
     const queryTab = searchParams?.get("tab") as TabId | null
     const stored = typeof window !== "undefined" ? (localStorage.getItem("dashboard-tab") as TabId | null) : null
+    const storedSection = typeof window !== "undefined" ? localStorage.getItem("dashboard-section") : null
     const initial = queryTab && tabRegistry[queryTab] ? queryTab : stored && tabRegistry[stored] ? stored : "current"
     setActiveTab(initial)
+    setActiveSection(storedSection || tabRegistry[initial].menu[0]?.id || null)
     setMountedTabs(new Set([initial]))
     setIsHydrated(true)
   }, [searchParams])
 
   useEffect(() => {
     if (!isHydrated) return
+    // reset section when changing tabs to their first item if none selected
+    const defaultSection = tabRegistry[activeTab].menu[0]?.id || null
+    setActiveSection((prev) => prev || defaultSection)
+
     setMountedTabs((prev) => {
       if (prev.has(activeTab)) return prev
       const next = new Set(prev)
@@ -81,8 +122,9 @@ export default function DashboardTabs() {
     localStorage.setItem("dashboard-tab", activeTab)
     const url = new URL(window.location.href)
     url.searchParams.set("tab", activeTab)
+    if (activeSection) url.searchParams.set("section", activeSection)
     window.history.replaceState({}, "", url.toString())
-  }, [activeTab, isHydrated])
+  }, [activeTab, isHydrated, activeSection])
 
   const tabs = useMemo(
     () => [
@@ -135,6 +177,32 @@ export default function DashboardTabs() {
         })}
       </div>
 
+      {tabRegistry[activeTab].menu.length > 0 && (
+        <div className="flex flex-wrap items-center gap-2 rounded-2xl border border-white/10 bg-white/5 p-3 shadow-inner">
+          {tabRegistry[activeTab].menu.map((item) => {
+            const Icon = item.icon
+            const isActive = activeSection === item.id
+            return (
+              <button
+                key={item.id}
+                onClick={() => {
+                  setActiveSection(item.id)
+                  if (typeof window !== "undefined") localStorage.setItem("dashboard-section", item.id)
+                }}
+                className={cn(
+                  "flex items-center gap-2 rounded-full px-3 py-2 text-sm font-semibold transition-all",
+                  "border border-transparent hover:border-gold/40",
+                  isActive ? "bg-gold text-navy" : "bg-white/5 text-foreground"
+                )}
+              >
+                <Icon className="h-4 w-4" />
+                {item.label}
+              </button>
+            )
+          })}
+        </div>
+      )}
+
       <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-b from-navy/80 to-navy-dark/90 shadow-2xl backdrop-blur-xl">
         <div className="absolute inset-0 bg-gradient-to-br from-gold/5 via-transparent to-blue-500/10 pointer-events-none" />
         <div className="relative">
@@ -148,7 +216,7 @@ export default function DashboardTabs() {
                 style={{ display: isVisible ? "block" : "none" }}
                 className="w-full transition-opacity duration-300"
               >
-                {shouldRender ? <Component /> : <LoadingSpinner />}
+                {shouldRender ? <Component section={activeSection} /> : <LoadingSpinner />}
               </div>
             )
           })}
