@@ -35,10 +35,3 @@ NEXT_PUBLIC_API_URL = "https://leadership-legacy.YOUR_SUBDOMAIN.workers.dev"
 [env.production]
 name = "leadership-legacy-production"
 vars = { ENVIRONMENT = "production" }
-
-# Rate limiting for API endpoints
-[[unsafe.bindings]]
-name = "RATE_LIMITER"
-type = "ratelimit"
-namespace_id = "leadership_legacy_limiter"
-simple = { limit = 100, period = 60 }
