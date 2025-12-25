@@ -19,7 +19,7 @@ database_id = "c593cef5-5921-4016-93c6-75361de39b2a"
 
 # R2 Bucket - Media assets
 [[r2_buckets]]
-binding = "ASSETS"
+binding = "R2_ASSETS"
 bucket_name = "leadership-legacy-assets"
 
 # KV Namespace - Configuration and feature flags
