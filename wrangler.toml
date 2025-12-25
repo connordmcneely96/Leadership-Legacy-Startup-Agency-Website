@@ -14,7 +14,7 @@ compatibility_flags = ["nodejs_compat"]
 [[d1_databases]]
 binding = "DB"
 database_name = "leadership-legacy-db"
-database_id = "D1_DATABASE_ID_PLACEHOLDER" # Set via deployment secrets
+database_id = "c593cef5-5921-4016-93c6-75361de39b2a"
 
 # R2 Bucket - Media assets
 [[r2_buckets]]
@@ -24,7 +24,7 @@ bucket_name = "leadership-legacy-assets"
 # KV Namespace - Configuration and feature flags
 [[kv_namespaces]]
 binding = "CONFIG"
-id = "KV_NAMESPACE_ID_PLACEHOLDER" # Set via deployment secrets
+id = "a82cf78ed3eb4422b6ac86c4891d76d5"
 
 # Environment variables
 [vars]
