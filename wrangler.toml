@@ -8,7 +8,8 @@ account_id = "d3dbdd3e1ebbc28edf0ce756d9841490"
 # Node.js compatibility for Next.js and Workers
 compatibility_flags = ["nodejs_compat"]
 
-# Build configuration moved to wrangler pages commands
+# Pages Configuration
+pages_build_output_dir = "out"
 
 # D1 Database - Contact submissions and analytics
 [[d1_databases]]
