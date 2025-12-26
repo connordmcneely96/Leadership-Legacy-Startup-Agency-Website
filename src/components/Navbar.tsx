@@ -7,6 +7,7 @@ import Link from "next/link";
 
 const navLinks = [
   { name: "Dashboard", href: "/dashboard" },
+  { name: "Workflow Suite Apps", href: "/suite" },
   { name: "Services", href: "#services" },
   { name: "Process", href: "#process" },
   { name: "Pricing", href: "#pricing" },
