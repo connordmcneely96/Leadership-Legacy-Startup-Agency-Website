@@ -21,6 +21,10 @@ database_id = "c593cef5-5921-4016-93c6-75361de39b2a"
 binding = "R2_ASSETS"
 bucket_name = "leadership-legacy-assets"
 
+# Workers AI - AI Assistant integration
+[ai]
+binding = "AI"
+
 # KV Namespace - Configuration and feature flags
 [[kv_namespaces]]
 binding = "CONFIG"
