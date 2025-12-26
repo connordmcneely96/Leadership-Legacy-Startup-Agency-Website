@@ -1,15 +1,14 @@
 # Cloudflare Workers Configuration for Leadership Legacy
+# This file is for the Workers API only
+# Pages (Next.js) deployment uses CLI or dashboard (no wrangler.toml needed)
 
-name = "leadership-legacy"
+name = "leadership-legacy-api"
 main = "workers/api/index.ts"
 compatibility_date = "2025-01-01"
 account_id = "d3dbdd3e1ebbc28edf0ce756d9841490"
 
-# Node.js compatibility for Next.js and Workers
+# Node.js compatibility for Workers
 compatibility_flags = ["nodejs_compat"]
-
-# Pages Configuration
-pages_build_output_dir = "out"
 
 # D1 Database - Contact submissions and analytics
 [[d1_databases]]

@@ -1,0 +1,24 @@
+# Cloudflare Pages Configuration for Leadership Legacy
+
+# Pages Configuration
+pages_build_output_dir = "out"
+
+# D1 Database - Contact submissions and analytics
+[[d1_databases]]
+binding = "DB"
+database_name = "leadership-legacy-db"
+database_id = "c593cef5-5921-4016-93c6-75361de39b2a"
+
+# R2 Bucket - Media assets
+[[r2_buckets]]
+binding = "R2_ASSETS"
+bucket_name = "leadership-legacy-assets"
+
+# KV Namespace - Configuration and feature flags
+[[kv_namespaces]]
+binding = "CONFIG"
+id = "a82cf78ed3eb4422b6ac86c4891d76d5"
+
+# Environment variables
+[vars]
+ENVIRONMENT = "production"
