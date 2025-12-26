@@ -2,7 +2,7 @@
 # This file is for the Workers API only
 # Pages (Next.js) deployment uses CLI or dashboard (no wrangler.toml needed)
 
-name = "leadership-legacy-api"
+name = "leadership-legacy"
 main = "workers/api/index.ts"
 compatibility_date = "2025-01-01"
 account_id = "d3dbdd3e1ebbc28edf0ce756d9841490"
