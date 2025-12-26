@@ -17,7 +17,9 @@ import {
   User,
   Settings,
   LogOut,
+  Bot,
 } from 'lucide-react'
+import { ChatPanel } from '@/components/AIAssistant'
 
 /**
  * Breadcrumb item interface
@@ -86,6 +88,7 @@ export default function SuiteHeader() {
   const [showQuickCreate, setShowQuickCreate] = useState(false)
   const [showUserMenu, setShowUserMenu] = useState(false)
   const [showNotifications, setShowNotifications] = useState(false)
+  const [showAIAssistant, setShowAIAssistant] = useState(false)
 
   const handleQuickCreate = (action: string) => {
     // TODO: Implement quick create actions
@@ -248,6 +251,17 @@ export default function SuiteHeader() {
           </AnimatePresence>
         </div>
 
+        {/* AI Assistant */}
+        <button
+          onClick={() => setShowAIAssistant(true)}
+          className="relative p-2 hover:bg-gold/10 rounded-lg transition-colors group"
+          aria-label="Open AI Assistant"
+          title="AI Assistant"
+        >
+          <Bot className="w-5 h-5 text-foreground group-hover:text-gold transition-colors" />
+          <span className="absolute -top-1 -right-1 w-2 h-2 bg-gold rounded-full animate-pulse" />
+        </button>
+
         {/* User Profile */}
         <div className="relative">
           <button
@@ -319,6 +333,9 @@ export default function SuiteHeader() {
           </AnimatePresence>
         </div>
       </div>
+
+      {/* AI Assistant Chat Panel */}
+      <ChatPanel isOpen={showAIAssistant} onClose={() => setShowAIAssistant(false)} />
     </header>
   )
 }
