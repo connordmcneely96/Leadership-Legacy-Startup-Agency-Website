@@ -9,6 +9,9 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      deployments: write
     name: Deploy to Cloudflare Pages
 
     steps:
@@ -27,9 +30,11 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Deploy to Cloudflare Pages
-        uses: cloudflare/wrangler-action@v3
+      - name: Publish to Cloudflare Pages
+        uses: cloudflare/pages-action@v1
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: d3dbdd3e1ebbc28edf0ce756d9841490
-          command: pages deploy out --project-name=leadership-legacy-startup-agency-website
+          projectName: leadership-legacy-startup-agency-website
+          directory: out
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}

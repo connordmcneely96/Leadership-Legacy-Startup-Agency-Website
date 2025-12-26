@@ -45,36 +45,52 @@ export function ChatPanel({ isOpen, onClose }: ChatPanelProps) {
     }
   }, [messages])
 
-  // Load mock data on mount (Phase 1)
+  // Load conversation history from API
   useEffect(() => {
     if (isOpen && messages.length === 0) {
-      loadMockHistory()
+      loadHistory()
     }
   }, [isOpen])
 
-  const loadMockHistory = () => {
-    // Mock conversation history for Phase 1 testing
-    const mockMessages: Message[] = [
-      {
+  const loadHistory = async () => {
+    try {
+      // Determine API URL based on environment
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://leadership-legacy-api.connorpattern.workers.dev'
+
+      const response = await fetch(
+        `${apiUrl}/api/assistant/history?conversationId=${conversationId}`
+      )
+
+      if (response.ok) {
+        const data = await response.json()
+        if (data.success && data.messages.length > 0) {
+          const historyMessages: Message[] = data.messages.map((msg: any) => ({
+            id: msg.id,
+            role: msg.role,
+            content: msg.content,
+            timestamp: new Date(msg.timestamp),
+          }))
+          setMessages(historyMessages)
+        } else {
+          // No history, show welcome message
+          setMessages([{
+            id: '1',
+            role: 'assistant',
+            content: "Hi! I'm your AI Assistant for Leadership Legacy. I can help you navigate the workflow suite, answer questions, and provide guidance on business strategy and startup growth. How can I assist you today?",
+            timestamp: new Date(),
+          }])
+        }
+      }
+    } catch (error) {
+      console.error('Failed to load history:', error)
+      // Show welcome message on error
+      setMessages([{
         id: '1',
         role: 'assistant',
-        content: "Hi! I'm your AI Assistant. I can help you navigate the workflow suite, answer questions, and provide guidance. How can I assist you today?",
-        timestamp: new Date(Date.now() - 3600000), // 1 hour ago
-      },
-      {
-        id: '2',
-        role: 'user',
-        content: 'How do I create a new project?',
-        timestamp: new Date(Date.now() - 3500000),
-      },
-      {
-        id: '3',
-        role: 'assistant',
-        content: "To create a new project:\n\n1. Navigate to the **Projects** section in Business Ops\n2. Click the **'New Project'** button in the top right\n3. Fill in the project details (name, client, budget, timeline)\n4. Click **'Create Project'** to save\n\nYou can also create projects directly from the Dashboard quick actions!",
-        timestamp: new Date(Date.now() - 3400000),
-      },
-    ]
-    setMessages(mockMessages)
+        content: "Hi! I'm your AI Assistant. How can I help you today?",
+        timestamp: new Date(),
+      }])
+    }
   }
 
   const sendMessage = async () => {
@@ -88,57 +104,55 @@ export function ChatPanel({ isOpen, onClose }: ChatPanelProps) {
     }
 
     setMessages((prev) => [...prev, userMessage])
+    const currentInput = input
     setInput('')
     setLoading(true)
 
     try {
-      // Phase 1: Mock AI response
-      // Phase 2: Replace with actual API call
-      await mockAIResponse(input)
+      // Call real AI API endpoint
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://leadership-legacy-api.connorpattern.workers.dev'
+
+      const response = await fetch(`${apiUrl}/api/assistant/chat`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          conversationId,
+          message: currentInput,
+          userId: 'anonymous', // TODO: Replace with actual user ID when auth is implemented
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to get AI response')
+      }
+
+      const data = await response.json()
+
+      if (data.success && data.message) {
+        const aiMessage: Message = {
+          id: data.message.id,
+          role: 'assistant',
+          content: data.message.content,
+          timestamp: new Date(data.message.timestamp),
+        }
+        setMessages((prev) => [...prev, aiMessage])
+      } else {
+        throw new Error('Invalid response from API')
+      }
     } catch (error) {
       console.error('Failed to send message:', error)
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
-        content: "I'm sorry, I encountered an error. Please try again.",
+        content: "I'm sorry, I encountered an error processing your request. Please try again.",
         timestamp: new Date(),
       }
       setMessages((prev) => [...prev, errorMessage])
     } finally {
       setLoading(false)
     }
-  }
-
-  // Mock AI response for Phase 1 testing
-  const mockAIResponse = async (userInput: string) => {
-    // Simulate API delay
-    await new Promise((resolve) => setTimeout(resolve, 1500))
-
-    let aiResponse = ''
-
-    // Simple keyword-based responses for testing
-    const input = userInput.toLowerCase()
-
-    if (input.includes('project')) {
-      aiResponse = "I can help you with projects! You can view, create, and manage projects in the **Business Ops** dashboard. Navigate to the Projects section to see your active projects, or use the 'New Project' button to create one."
-    } else if (input.includes('invoice')) {
-      aiResponse = "For invoices, go to **Business Ops** → **Invoices**. You can create new invoices, track payments, and send them to clients directly from there."
-    } else if (input.includes('help') || input.includes('how')) {
-      aiResponse = "I'm here to help! You can ask me about:\n\n• Navigating the dashboard\n• Creating projects or invoices\n• Managing clients and teams\n• Using the calendar or tasks\n• Any features in the workflow suite"
-    } else if (input.includes('hi') || input.includes('hello')) {
-      aiResponse = "Hello! How can I assist you with your workflow today?"
-    } else {
-      aiResponse = `I understand you're asking about: "${userInput}". While I'm in demo mode, I can help you navigate the suite and answer questions about features. What would you like to know more about?`
-    }
-
-    const aiMessage: Message = {
-      id: (Date.now() + 1).toString(),
-      role: 'assistant',
-      content: aiResponse,
-      timestamp: new Date(),
-    }
-
-    setMessages((prev) => [...prev, aiMessage])
   }
 
   return (

@@ -13,6 +13,7 @@ export interface Env {
   ASSETS: R2Bucket;
   CONFIG: KVNamespace;
   RATE_LIMITER: any;
+  AI: any; // Cloudflare Workers AI
   ENVIRONMENT: string;
 }
 
@@ -52,6 +53,14 @@ export default {
 
       if (url.pathname === '/api/newsletter' && request.method === 'POST') {
         return await handleNewsletter(request, env);
+      }
+
+      if (url.pathname === '/api/assistant/chat' && request.method === 'POST') {
+        return await handleAssistantChat(request, env);
+      }
+
+      if (url.pathname === '/api/assistant/history' && request.method === 'GET') {
+        return await handleAssistantHistory(request, env);
       }
 
       if (url.pathname === '/api/health') {
@@ -231,6 +240,160 @@ async function handleNewsletter(request: Request, env: Env): Promise<Response> {
     console.error('Newsletter error:', error);
     return new Response(
       JSON.stringify({ error: 'Failed to subscribe to newsletter' }),
+      { status: 500, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
+    );
+  }
+}
+
+// AI Assistant chat handler
+async function handleAssistantChat(request: Request, env: Env): Promise<Response> {
+  try {
+    const data = await request.json() as {
+      conversationId: string;
+      message: string;
+      userId?: string;
+    };
+
+    if (!data.message || !data.conversationId) {
+      return new Response(
+        JSON.stringify({ error: 'Missing required fields' }),
+        { status: 400, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
+      );
+    }
+
+    const userId = data.userId || 'anonymous';
+    const timestamp = Date.now();
+
+    // Check if conversation exists, if not create it
+    const existingConv = await env.DB.prepare(
+      'SELECT id FROM conversations WHERE id = ?'
+    ).bind(data.conversationId).first();
+
+    if (!existingConv) {
+      await env.DB.prepare(`
+        INSERT INTO conversations (id, user_id, title, created_at, updated_at)
+        VALUES (?, ?, ?, ?, ?)
+      `).bind(
+        data.conversationId,
+        userId,
+        data.message.substring(0, 50) + '...', // First 50 chars as title
+        timestamp,
+        timestamp
+      ).run();
+    } else {
+      // Update conversation timestamp
+      await env.DB.prepare(
+        'UPDATE conversations SET updated_at = ? WHERE id = ?'
+      ).bind(timestamp, data.conversationId).run();
+    }
+
+    // Save user message
+    const userMessageId = crypto.randomUUID();
+    await env.DB.prepare(`
+      INSERT INTO messages (id, conversation_id, role, content, created_at)
+      VALUES (?, ?, ?, ?, ?)
+    `).bind(
+      userMessageId,
+      data.conversationId,
+      'user',
+      data.message,
+      timestamp
+    ).run();
+
+    // Get conversation history for context
+    const history = await env.DB.prepare(`
+      SELECT role, content FROM messages
+      WHERE conversation_id = ?
+      ORDER BY created_at ASC
+      LIMIT 20
+    `).bind(data.conversationId).all();
+
+    // Build messages array for AI
+    const messages = history.results.map((msg: any) => ({
+      role: msg.role,
+      content: msg.content,
+    }));
+
+    // Call Cloudflare Workers AI
+    const aiResponse = await env.AI.run('@cf/meta/llama-3.1-8b-instruct', {
+      messages: [
+        {
+          role: 'system',
+          content: 'You are a helpful AI assistant for Leadership Legacy, a startup agency that helps entrepreneurs build and scale their businesses. Be professional, concise, and helpful. Provide actionable advice and insights about business strategy, leadership, and startup growth.',
+        },
+        ...messages,
+      ],
+    });
+
+    const assistantMessage = aiResponse.response || 'I apologize, but I encountered an error. Please try again.';
+
+    // Save AI response
+    const aiMessageId = crypto.randomUUID();
+    await env.DB.prepare(`
+      INSERT INTO messages (id, conversation_id, role, content, created_at)
+      VALUES (?, ?, ?, ?, ?)
+    `).bind(
+      aiMessageId,
+      data.conversationId,
+      'assistant',
+      assistantMessage,
+      Date.now()
+    ).run();
+
+    return new Response(
+      JSON.stringify({
+        success: true,
+        message: {
+          id: aiMessageId,
+          role: 'assistant',
+          content: assistantMessage,
+          timestamp: Date.now(),
+        },
+      }),
+      { headers: { 'Content-Type': 'application/json', ...corsHeaders } }
+    );
+  } catch (error) {
+    console.error('AI Assistant error:', error);
+    return new Response(
+      JSON.stringify({ error: 'Failed to process chat request' }),
+      { status: 500, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
+    );
+  }
+}
+
+// AI Assistant history handler
+async function handleAssistantHistory(request: Request, env: Env): Promise<Response> {
+  try {
+    const url = new URL(request.url);
+    const conversationId = url.searchParams.get('conversationId');
+
+    if (!conversationId) {
+      return new Response(
+        JSON.stringify({ error: 'Missing conversationId parameter' }),
+        { status: 400, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
+      );
+    }
+
+    // Get conversation messages
+    const messages = await env.DB.prepare(`
+      SELECT id, role, content, created_at as timestamp
+      FROM messages
+      WHERE conversation_id = ?
+      ORDER BY created_at ASC
+    `).bind(conversationId).all();
+
+    return new Response(
+      JSON.stringify({
+        success: true,
+        conversationId,
+        messages: messages.results,
+      }),
+      { headers: { 'Content-Type': 'application/json', ...corsHeaders } }
+    );
+  } catch (error) {
+    console.error('History retrieval error:', error);
+    return new Response(
+      JSON.stringify({ error: 'Failed to retrieve conversation history' }),
       { status: 500, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
     );
   }
