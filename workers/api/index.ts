@@ -677,7 +677,7 @@ async function handleFilesUpload(request: Request, env: Env): Promise<Response> 
         return json({ error: `Missing ${key}` }, 400);
       }
     }
-    return await persistFileMetadata(env, {
+    const metadata = await persistFileMetadata(env, {
       id: crypto.randomUUID(),
       userId: body.userId,
       folderPath: body.folderPath || '/',
@@ -687,6 +687,7 @@ async function handleFilesUpload(request: Request, env: Env): Promise<Response> 
       r2Key: body.r2Key,
       thumbnailR2Key: body.thumbnailR2Key || null,
     });
+    return json(metadata, 201);
   }
 
   const form = await request.formData();
@@ -708,7 +709,7 @@ async function handleFilesUpload(request: Request, env: Env): Promise<Response> 
     const id = crypto.randomUUID();
     const r2Key = `${userId}/drive/${folderPath ? folderPath + '/' : ''}${file.name}`;
     // Upload to R2
-    await bucket.put(r2Key, file.stream(), {
+    await bucket.put(r2Key, file.stream() as any, {
       httpMetadata: { contentType: file.type },
     });
     stored.push({
@@ -759,7 +760,7 @@ async function handleFilesDelete(env: Env, id: string): Promise<Response> {
       .run();
   }
   if (bucket && row?.r2_key) {
-    await bucket.delete(row.r2_key);
+    await bucket.delete(row.r2_key as string);
   }
   return json({ success: true });
 }

@@ -1,4 +1,4 @@
-import 'use client'
+'use client'
 
 import { useEffect, useMemo, useState } from 'react'
 import { GalleryVertical as Gallery, Filter, Palette, FileImage, Plus } from 'lucide-react'
@@ -216,16 +216,6 @@ function CategoryFilter({ label, active }: { label: string; active?: boolean }) 
       {label}
     </button>
   )
-}
-
-/**
- * Asset Card Component
- */
-interface Asset {
-  id: string
-  name: string
-  color: string
-  palette?: string[]
 }
 
 const mockAssets = {

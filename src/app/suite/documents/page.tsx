@@ -1,3 +1,5 @@
+'use client'
+
 import { useEffect, useMemo, useState } from 'react'
 import { FileText, Grid, List, Plus, Filter, SortAsc, Star } from 'lucide-react'
 import { useFabActionListener } from '@/lib/hooks/useFabActionListener'
@@ -191,17 +193,6 @@ export default function DocumentsPage() {
       </button>
     </div>
   )
-}
-
-/**
- * Document Row Component
- */
-interface Document {
-  id: string
-  name: string
-  owner: string
-  modified: string
-  size: string
 }
 
 const mockDocuments: Document[] = [

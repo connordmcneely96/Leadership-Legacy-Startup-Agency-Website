@@ -1,4 +1,4 @@
-import 'use client'
+'use client'
 
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useDropzone } from 'react-dropzone'

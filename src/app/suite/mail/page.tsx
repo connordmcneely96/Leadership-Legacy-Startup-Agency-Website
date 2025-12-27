@@ -1,4 +1,4 @@
-import 'use client'
+'use client'
 
 import { useEffect, useMemo, useState } from 'react'
 import { Mail, Inbox, Send, Star, Trash2, Plus, Search, Paperclip, Calendar } from 'lucide-react'
@@ -252,20 +252,6 @@ function FolderButton({ icon: Icon, label, count, active }: FolderButtonProps) {
   )
 }
 
-/**
- * Email List Item Component
- */
-interface EmailData {
-  id: string
-  sender: string
-  subject: string
-  preview: string
-  time: string
-  unread?: boolean
-  starred?: boolean
-  hasAttachment?: boolean
-}
-
 const mockEmails: EmailData[] = [
   {
     id: '1',
@@ -309,7 +295,7 @@ const mockEmails: EmailData[] = [
   },
 ]
 
-function EmailListItem({ email }: { email: EmailData }) {
+function EmailListItem({ email, onToggleRead }: { email: EmailData; onToggleRead?: () => void }) {
   return (
     <button
       className={`w-full p-4 hover:bg-muted/50 transition-colors text-left ${
@@ -318,7 +304,7 @@ function EmailListItem({ email }: { email: EmailData }) {
       onClick={(e) => {
         e.preventDefault()
         e.stopPropagation()
-        email.onToggleRead?.()
+        onToggleRead?.()
       }}
     >
       <div className="flex items-start gap-3 mb-2">
