@@ -4,6 +4,7 @@ import SuiteHeader from '@/components/suite/SuiteHeader'
 import { UniversalFAB } from '@/components/suite/UniversalFAB'
 import { FabActionRouter } from '@/components/suite/FabActionRouter'
 import { FooterUserPanel } from '@/components/suite/FooterUserPanel'
+import { ErrorBoundary } from '@/components/suite/ErrorBoundary'
 
 export const metadata: Metadata = {
   title: 'Leadership Suite | Productivity Apps',
@@ -23,29 +24,31 @@ export default function SuiteLayout({
   children: React.ReactNode
 }) {
   return (
-    <div className="relative min-h-screen bg-background">
-      {/* Sidebar Navigation */}
-      <SuiteSidebar />
+    <ErrorBoundary>
+      <div className="relative min-h-screen bg-background">
+        {/* Sidebar Navigation */}
+        <SuiteSidebar />
 
-      {/* Main Content Area */}
-      <div className="lg:ml-[280px] transition-all duration-200">
-        {/* Header */}
-        <SuiteHeader />
+        {/* Main Content Area */}
+        <div className="lg:ml-[280px] transition-all duration-200">
+          {/* Header */}
+          <SuiteHeader />
 
-        {/* Page Content */}
-        <main className="min-h-[calc(100vh-4rem)]">
-          {children}
-        </main>
+          {/* Page Content */}
+          <main className="min-h-[calc(100vh-4rem)]">
+            {children}
+          </main>
 
-        {/* Universal Floating Action Button (context-aware across suite) */}
-        <UniversalFAB />
+          {/* Universal Floating Action Button (context-aware across suite) */}
+          <UniversalFAB />
 
-        {/* FAB Action Router (handles navigation + lightweight feedback) */}
-        <FabActionRouter />
+          {/* FAB Action Router (handles navigation + lightweight feedback) */}
+          <FabActionRouter />
 
-        {/* Footer User Panel */}
-        <FooterUserPanel />
+          {/* Footer User Panel */}
+          <FooterUserPanel />
+        </div>
       </div>
-    </div>
+    </ErrorBoundary>
   )
 }
