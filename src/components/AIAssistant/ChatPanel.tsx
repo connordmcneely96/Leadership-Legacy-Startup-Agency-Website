@@ -37,6 +37,13 @@ export function ChatPanel({ isOpen, onClose }: ChatPanelProps) {
   const [loading, setLoading] = useState(false)
   const [conversationId] = useState(() => crypto.randomUUID())
   const messagesEndRef = useRef<HTMLDivElement>(null)
+  const [contextPath, setContextPath] = useState<string>('/')
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setContextPath(window.location.pathname)
+    }
+  }, [])
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
@@ -54,13 +61,7 @@ export function ChatPanel({ isOpen, onClose }: ChatPanelProps) {
 
   const loadHistory = async () => {
     try {
-      // Determine API URL based on environment
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://leadership-legacy-api.connorpattern.workers.dev'
-
-      const response = await fetch(
-        `${apiUrl}/api/assistant/history?conversationId=${conversationId}`
-      )
-
+      const response = await fetch(`/api/assistant/history?conversationId=${conversationId}`)
       if (response.ok) {
         const data = await response.json()
         if (data.success && data.messages.length > 0) {
@@ -72,24 +73,27 @@ export function ChatPanel({ isOpen, onClose }: ChatPanelProps) {
           }))
           setMessages(historyMessages)
         } else {
-          // No history, show welcome message
-          setMessages([{
-            id: '1',
-            role: 'assistant',
-            content: "Hi! I'm your AI Assistant for Leadership Legacy. I can help you navigate the workflow suite, answer questions, and provide guidance on business strategy and startup growth. How can I assist you today?",
-            timestamp: new Date(),
-          }])
+          setMessages([
+            {
+              id: '1',
+              role: 'assistant',
+              content:
+                "Hi! I'm your AI Assistant for Leadership Legacy. I can help you navigate the suite, suggest next actions, and draft content. How can I assist you today?",
+              timestamp: new Date(),
+            },
+          ])
         }
       }
     } catch (error) {
       console.error('Failed to load history:', error)
-      // Show welcome message on error
-      setMessages([{
-        id: '1',
-        role: 'assistant',
-        content: "Hi! I'm your AI Assistant. How can I help you today?",
-        timestamp: new Date(),
-      }])
+      setMessages([
+        {
+          id: '1',
+          role: 'assistant',
+          content: "Hi! I'm your AI Assistant. How can I help you today?",
+          timestamp: new Date(),
+        },
+      ])
     }
   }
 
@@ -109,18 +113,20 @@ export function ChatPanel({ isOpen, onClose }: ChatPanelProps) {
     setLoading(true)
 
     try {
-      // Call real AI API endpoint
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://leadership-legacy-api.connorpattern.workers.dev'
-
-      const response = await fetch(`${apiUrl}/api/assistant/chat`, {
+      const response = await fetch(`/api/ai/chat`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          conversationId,
-          message: currentInput,
-          userId: 'anonymous', // TODO: Replace with actual user ID when auth is implemented
+          messages: [
+            {
+              role: 'system',
+              content: `The user is currently in the suite at path "${contextPath}". Be concise and action-oriented. If relevant, suggest actions using the suite modules (docs, sheets, slides, drive, photos, gallery, calendar, mail, meet, tasks).`,
+            },
+            ...messages.slice(-6).map((m) => ({ role: m.role, content: m.content })),
+            { role: 'user', content: currentInput },
+          ],
         }),
       })
 
@@ -130,12 +136,12 @@ export function ChatPanel({ isOpen, onClose }: ChatPanelProps) {
 
       const data = await response.json()
 
-      if (data.success && data.message) {
+      if (data.success && data.data && data.data.content) {
         const aiMessage: Message = {
-          id: data.message.id,
+          id: crypto.randomUUID(),
           role: 'assistant',
-          content: data.message.content,
-          timestamp: new Date(data.message.timestamp),
+          content: Array.isArray(data.data.content) ? data.data.content.map((c: any) => c.text || '').join('\n') : data.data.content,
+          timestamp: new Date(),
         }
         setMessages((prev) => [...prev, aiMessage])
       } else {

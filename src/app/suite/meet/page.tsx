@@ -1,4 +1,8 @@
+import 'use client'
+
+import { useEffect, useMemo, useState } from 'react'
 import { Video, Calendar, Users, Plus, Clock, ExternalLink } from 'lucide-react'
+import { useFabActionListener } from '@/lib/hooks/useFabActionListener'
 
 /**
  * Meet Page
@@ -10,7 +14,86 @@ import { Video, Calendar, Users, Plus, Clock, ExternalLink } from 'lucide-react'
  * - Join meeting by code
  * - Integration placeholder for future video platform
  */
+type Meeting = {
+  id: string
+  title: string
+  time: string
+  duration: string
+  attendees: number
+  host: string
+  code?: string
+}
+
+const USER_ID = 'demo-user'
+
 export default function MeetPage() {
+  const [meetings, setMeetings] = useState<Meeting[]>(upcomingMeetings)
+  const [loading, setLoading] = useState(true)
+  const [joinCode, setJoinCode] = useState('')
+
+  const load = useMemo(
+    () => async () => {
+      setLoading(true)
+      try {
+        const res = await fetch(`/api/meetings?user_id=${USER_ID}`)
+        const json = await res.json()
+        if (json?.data) {
+          setMeetings(
+            json.data.map((m: any) => ({
+              id: m.id,
+              title: m.title,
+              time: new Date((m.scheduled_at || Date.now() / 1000) * 1000).toLocaleString(),
+              duration: `${Math.round((m.duration || 3600) / 60)} min`,
+              attendees: m.participants ? JSON.parse(m.participants || '[]').length : 0,
+              host: 'You',
+              code: m.code,
+            }))
+          )
+          setLoading(false)
+          return
+        }
+      } catch {
+        /* fallback */
+      }
+      setMeetings(upcomingMeetings)
+      setLoading(false)
+    },
+    []
+  )
+
+  useEffect(() => {
+    load()
+  }, [load])
+
+  useFabActionListener({
+    'meet-schedule': async () => {
+      await createMeeting('Scheduled Meeting')
+    },
+    'meet-instant': async () => {
+      await createMeeting('Instant Meeting')
+    },
+    'meet-primary': async () => {
+      await createMeeting('Instant Meeting')
+    },
+  })
+
+  async function createMeeting(title: string) {
+    try {
+      await fetch('/api/meetings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: USER_ID,
+          title,
+          scheduledAt: Math.floor(Date.now() / 1000),
+          duration: 3600,
+        }),
+      })
+      load()
+    } catch (e) {
+      console.error(e)
+    }
+  }
   return (
     <div className="p-8 max-w-[1400px] mx-auto">
       {/* Page Header */}
@@ -32,7 +115,10 @@ export default function MeetPage() {
               <p className="text-sm text-muted-foreground">Begin an instant meeting</p>
             </div>
           </div>
-          <button className="w-full px-6 py-3 bg-gold hover:bg-gold-light text-navy-dark font-medium rounded-lg transition-all hover:scale-105">
+          <button
+            className="w-full px-6 py-3 bg-gold hover:bg-gold-light text-navy-dark font-medium rounded-lg transition-all hover:scale-105"
+            onClick={() => createMeeting('Instant Meeting')}
+          >
             New Meeting
           </button>
         </div>
@@ -53,8 +139,25 @@ export default function MeetPage() {
               type="text"
               placeholder="Enter meeting code"
               className="flex-1 px-4 py-3 bg-muted/50 border border-border rounded-lg text-sm focus:outline-none focus:border-gold"
+              value={joinCode}
+              onChange={(e) => setJoinCode(e.target.value)}
             />
-            <button className="px-6 py-3 bg-blue hover:bg-blue-light text-white font-medium rounded-lg transition-all">
+            <button
+              className="px-6 py-3 bg-blue hover:bg-blue-light text-white font-medium rounded-lg transition-all"
+              onClick={async () => {
+                if (!joinCode.trim()) return
+                try {
+                  const res = await fetch(`/api/meetings/join/${joinCode.trim()}`)
+                  const json = await res.json()
+                  if (json?.data?.code) {
+                    // placeholder: navigate/route would go here
+                    alert(`Joining meeting ${json.data.title} (${json.data.code})`)
+                  }
+                } catch (e) {
+                  console.error(e)
+                }
+              }}
+            >
               Join
             </button>
           </div>
@@ -72,7 +175,7 @@ export default function MeetPage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {upcomingMeetings.map((meeting) => (
+          {(loading ? upcomingMeetings : meetings).map((meeting) => (
             <MeetingCard key={meeting.id} meeting={meeting} />
           ))}
         </div>

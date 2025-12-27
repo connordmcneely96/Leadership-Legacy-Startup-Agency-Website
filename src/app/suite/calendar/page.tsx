@@ -1,4 +1,8 @@
+import 'use client'
+
+import { useEffect, useMemo, useState } from 'react'
 import { Calendar, ChevronLeft, ChevronRight, Plus, Clock, Users } from 'lucide-react'
+import { useFabActionListener } from '@/lib/hooks/useFabActionListener'
 
 /**
  * Calendar Page
@@ -10,7 +14,88 @@ import { Calendar, ChevronLeft, ChevronRight, Plus, Clock, Users } from 'lucide-
  * - Event cards with color coding
  * - New event modal trigger
  */
+const USER_ID = 'demo-user'
+
+type Event = {
+  id: string
+  title: string
+  time: string
+  color: string
+  attendees?: number
+}
+
+type CalendarDayData = {
+  id: string
+  date: number
+  events: { id: string; title: string; color: string }[]
+  isToday?: boolean
+  isCurrentMonth?: boolean
+}
+
 export default function CalendarPage() {
+  const [events, setEvents] = useState<Event[]>(upcomingEvents)
+  const [days, setDays] = useState<CalendarDayData[]>(calendarDays)
+  const [loading, setLoading] = useState(true)
+  const [newEventOpen, setNewEventOpen] = useState(false)
+  const [form, setForm] = useState({ title: '', start: '', end: '', location: '' })
+
+  const load = useMemo(
+    () => async () => {
+      setLoading(true)
+      try {
+        const res = await fetch(`/api/calendar/events?user_id=${USER_ID}`)
+        const json = await res.json()
+        if (json?.data) {
+          const mapped: Event[] = json.data.map((e: any) => ({
+            id: e.id,
+            title: e.title,
+            time: new Date((e.start_time || Date.now() / 1000) * 1000).toLocaleString(),
+            color: 'gold',
+          }))
+          setEvents(mapped)
+          setLoading(false)
+          return
+        }
+      } catch {
+        /* fallback */
+      }
+      setEvents(upcomingEvents)
+      setLoading(false)
+    },
+    []
+  )
+
+  useEffect(() => {
+    load()
+  }, [load])
+
+  useFabActionListener({
+    'calendar-event': () => setNewEventOpen(true),
+    'calendar-meeting': () => setNewEventOpen(true),
+    'calendar-primary': () => setNewEventOpen(true),
+  })
+
+  async function createEvent() {
+    if (!form.title || !form.start || !form.end) return
+    try {
+      await fetch('/api/calendar/events', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: USER_ID,
+          title: form.title,
+          startTime: Math.floor(new Date(form.start).getTime() / 1000),
+          endTime: Math.floor(new Date(form.end).getTime() / 1000),
+          location: form.location,
+        }),
+      })
+      setNewEventOpen(false)
+      setForm({ title: '', start: '', end: '', location: '' })
+      load()
+    } catch (e) {
+      console.error(e)
+    }
+  }
   return (
     <div className="flex h-[calc(100vh-4rem)]">
       {/* Secondary Sidebar - Mini Calendar */}
@@ -42,7 +127,7 @@ export default function CalendarPage() {
         <div>
           <h3 className="text-sm font-semibold text-foreground mb-3">Upcoming Events</h3>
           <div className="space-y-3">
-            {upcomingEvents.map((event) => (
+            {(loading ? upcomingEvents : events).map((event) => (
               <UpcomingEventCard key={event.id} event={event} />
             ))}
           </div>
@@ -86,13 +171,58 @@ export default function CalendarPage() {
 
             {/* Calendar Days */}
             <div className="grid grid-cols-7">
-              {calendarDays.map((day) => (
+              {(loading ? calendarDays : days).map((day) => (
                 <CalendarDay key={day.id} day={day} />
               ))}
             </div>
           </div>
         </div>
       </div>
+
+      {newEventOpen && (
+        <div className="fixed inset-0 z-[var(--z-modal)] bg-black/50 flex items-center justify-center px-4">
+          <div className="bg-card border border-border rounded-xl p-6 w-full max-w-md shadow-xl space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-semibold text-foreground">New Event</h3>
+              <button className="text-muted-foreground hover:text-foreground" onClick={() => setNewEventOpen(false)}>
+                ×
+              </button>
+            </div>
+            <input
+              className="w-full px-3 py-2 bg-muted/50 border border-border rounded-lg text-sm"
+              placeholder="Title"
+              value={form.title}
+              onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
+            />
+            <input
+              type="datetime-local"
+              className="w-full px-3 py-2 bg-muted/50 border border-border rounded-lg text-sm"
+              value={form.start}
+              onChange={(e) => setForm((f) => ({ ...f, start: e.target.value }))}
+            />
+            <input
+              type="datetime-local"
+              className="w-full px-3 py-2 bg-muted/50 border border-border rounded-lg text-sm"
+              value={form.end}
+              onChange={(e) => setForm((f) => ({ ...f, end: e.target.value }))}
+            />
+            <input
+              className="w-full px-3 py-2 bg-muted/50 border border-border rounded-lg text-sm"
+              placeholder="Location"
+              value={form.location}
+              onChange={(e) => setForm((f) => ({ ...f, location: e.target.value }))}
+            />
+            <div className="flex justify-end gap-2">
+              <button className="px-3 py-2 text-sm rounded-lg bg-muted hover:bg-muted/80" onClick={() => setNewEventOpen(false)}>
+                Cancel
+              </button>
+              <button className="px-3 py-2 text-sm rounded-lg bg-gold text-navy-dark hover:bg-gold-light" onClick={createEvent}>
+                Create
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

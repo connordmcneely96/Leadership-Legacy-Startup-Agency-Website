@@ -1,4 +1,8 @@
+import 'use client'
+
+import { useEffect, useMemo, useState } from 'react'
 import { GalleryVertical as Gallery, Filter, Palette, FileImage, Plus } from 'lucide-react'
+import { useFabActionListener } from '@/lib/hooks/useFabActionListener'
 
 /**
  * Gallery Page
@@ -9,7 +13,60 @@ import { GalleryVertical as Gallery, Filter, Palette, FileImage, Plus } from 'lu
  * - Color palette extraction display
  * - Grid layout for brand assets
  */
+type Asset = {
+  id: string
+  name: string
+  color: string
+  palette?: string[]
+}
+
+type Album = {
+  id: string
+  name: string
+  count?: number
+}
+
+const USER_ID = 'demo-user'
+const mockAlbums: Album[] = [
+  { id: 'a1', name: 'Brand Logos' },
+  { id: 'a2', name: 'Campaign A' },
+]
+
 export default function GalleryPage() {
+  const [albums, setAlbums] = useState<Album[]>(mockAlbums)
+  const [loading, setLoading] = useState(true)
+  const [albumModal, setAlbumModal] = useState(false)
+  const [albumName, setAlbumName] = useState('')
+
+  const load = useMemo(
+    () => async () => {
+      setLoading(true)
+      try {
+        const res = await fetch(`/api/albums?user_id=${USER_ID}`)
+        const json = await res.json()
+        if (json?.data) {
+          setAlbums(json.data)
+          setLoading(false)
+          return
+        }
+      } catch {
+        /* fallback */
+      }
+      setAlbums(mockAlbums)
+      setLoading(false)
+    },
+    []
+  )
+
+  useEffect(() => {
+    load()
+  }, [load])
+
+  useFabActionListener({
+    'gallery-create': () => setAlbumModal(true),
+    'gallery-add': () => setAlbumModal(true),
+    'gallery-primary': () => setAlbumModal(true),
+  })
   return (
     <div className="p-8 max-w-[1600px] mx-auto">
       {/* Page Header */}
@@ -33,6 +90,27 @@ export default function GalleryPage() {
         <CategoryFilter label="Templates" />
         <CategoryFilter label="Icons" />
         <CategoryFilter label="Backgrounds" />
+      </div>
+
+      {/* Albums */}
+      <div className="mb-8">
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="text-sm font-semibold text-foreground">Albums</h3>
+          <button
+            className="flex items-center gap-2 px-3 py-1.5 text-xs rounded-lg bg-gold/10 text-gold border border-gold/30 hover:bg-gold/20"
+            onClick={() => setAlbumModal(true)}
+          >
+            <Plus className="w-4 h-4" />
+            New Album
+          </button>
+        </div>
+        <div className="flex gap-2 flex-wrap">
+          {(loading ? mockAlbums : albums).map((album) => (
+            <div key={album.id} className="px-3 py-2 rounded-lg border border-border bg-muted/30 text-sm text-foreground">
+              {album.name}
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Assets Grid */}
@@ -76,6 +154,49 @@ export default function GalleryPage() {
           </div>
         </div>
       </div>
+      {albumModal && (
+        <div className="fixed inset-0 z-[var(--z-modal)] bg-black/50 flex items-center justify-center px-4">
+          <div className="bg-card border border-border rounded-xl p-6 w-full max-w-sm shadow-xl space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-semibold text-foreground">New Album</h3>
+              <button className="text-muted-foreground hover:text-foreground" onClick={() => setAlbumModal(false)}>
+                ×
+              </button>
+            </div>
+            <input
+              className="w-full px-3 py-2 bg-muted/50 border border-border rounded-lg text-sm"
+              placeholder="Album name"
+              value={albumName}
+              onChange={(e) => setAlbumName(e.target.value)}
+            />
+            <div className="flex justify-end gap-2">
+              <button className="px-3 py-2 text-sm rounded-lg bg-muted hover:bg-muted/80" onClick={() => setAlbumModal(false)}>
+                Cancel
+              </button>
+              <button
+                className="px-3 py-2 text-sm rounded-lg bg-gold text-navy-dark hover:bg-gold-light"
+                onClick={async () => {
+                  if (!albumName.trim()) return
+                  try {
+                    await fetch('/api/albums', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({ userId: USER_ID, name: albumName.trim() }),
+                    })
+                    setAlbumName('')
+                    setAlbumModal(false)
+                    load()
+                  } catch (e) {
+                    console.error(e)
+                  }
+                }}
+              >
+                Create
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

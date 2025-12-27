@@ -1,6 +1,9 @@
 import type { Metadata } from 'next'
 import SuiteSidebar from '@/components/suite/SuiteSidebar'
 import SuiteHeader from '@/components/suite/SuiteHeader'
+import { UniversalFAB } from '@/components/suite/UniversalFAB'
+import { FabActionRouter } from '@/components/suite/FabActionRouter'
+import { FooterUserPanel } from '@/components/suite/FooterUserPanel'
 
 export const metadata: Metadata = {
   title: 'Leadership Suite | Productivity Apps',
@@ -33,6 +36,15 @@ export default function SuiteLayout({
         <main className="min-h-[calc(100vh-4rem)]">
           {children}
         </main>
+
+        {/* Universal Floating Action Button (context-aware across suite) */}
+        <UniversalFAB />
+
+        {/* FAB Action Router (handles navigation + lightweight feedback) */}
+        <FabActionRouter />
+
+        {/* Footer User Panel */}
+        <FooterUserPanel />
       </div>
     </div>
   )

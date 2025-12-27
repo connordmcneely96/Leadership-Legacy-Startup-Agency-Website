@@ -1,4 +1,14 @@
+import { useEffect, useMemo, useState } from 'react'
 import { Presentation, Grid, List, Plus, Filter, SortAsc, Layout } from 'lucide-react'
+import { useFabActionListener } from '@/lib/hooks/useFabActionListener'
+
+type SlideDoc = {
+  id: string
+  name: string
+  owner: string
+  modified: string
+  slides: number
+}
 
 /**
  * Slides Page
@@ -10,6 +20,72 @@ import { Presentation, Grid, List, Plus, Filter, SortAsc, Layout } from 'lucide-
  * - Recent presentations
  */
 export default function SlidesPage() {
+  const [items, setItems] = useState<SlideDoc[]>([])
+  const [loading, setLoading] = useState(true)
+  const [view, setView] = useState<'grid' | 'list'>('grid')
+  const [sort, setSort] = useState<'updated' | 'name' | 'size'>('updated')
+  const [filter, setFilter] = useState<'all' | 'recent' | 'starred' | 'shared' | 'owned'>('all')
+
+  const load = useMemo(
+    () => async () => {
+      setLoading(true)
+      try {
+        const params = new URLSearchParams()
+        params.set('type', 'slide')
+        params.set('sort', sort === 'name' ? 'name' : sort === 'size' ? 'size' : 'updated')
+        if (filter !== 'all') params.set('filter', filter)
+        const res = await fetch(`/api/documents?${params.toString()}`)
+        const json = await res.json()
+        if (json?.data) {
+          setItems(
+            json.data.map((d: any) => ({
+              id: d.id,
+              name: d.title,
+              owner: 'You',
+              modified: new Date((d.updated_at || Date.now() / 1000) * 1000).toLocaleString(),
+              slides: d.size ? Math.max(1, Math.round(d.size / 10000)) : 10,
+            }))
+          )
+          setLoading(false)
+          return
+        }
+      } catch {
+        /* fall back */
+      }
+      setItems(mockPresentations)
+      setLoading(false)
+    },
+    [sort, filter]
+  )
+
+  useEffect(() => {
+    load()
+  }, [load])
+
+  useFabActionListener({
+    'slides-blank': async () => {
+      await createSlide('Untitled deck')
+    },
+    'slides-template': async () => {
+      await createSlide('Template deck')
+    },
+    'slides-primary': async () => {
+      await createSlide('Untitled deck')
+    },
+  })
+
+  async function createSlide(title: string) {
+    try {
+      await fetch('/api/documents', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: 'demo-user', type: 'slide', title }),
+      })
+      load()
+    } catch {
+      /* ignore */
+    }
+  }
   return (
     <div className="p-8 max-w-[1600px] mx-auto">
       {/* Page Header */}
@@ -21,19 +97,45 @@ export default function SlidesPage() {
 
         {/* View Controls */}
         <div className="flex items-center gap-3">
-          <button className="p-2 hover:bg-muted rounded-lg transition-colors bg-gold/10" title="Grid view">
-            <Grid className="w-5 h-5 text-gold" />
+          <button
+            className={`p-2 rounded-lg transition-colors ${view === 'grid' ? 'bg-gold/10' : 'hover:bg-muted'}`}
+            title="Grid view"
+            onClick={() => setView('grid')}
+          >
+            <Grid className={`w-5 h-5 ${view === 'grid' ? 'text-gold' : 'text-muted-foreground'}`} />
           </button>
-          <button className="p-2 hover:bg-muted rounded-lg transition-colors" title="List view">
-            <List className="w-5 h-5 text-muted-foreground" />
+          <button
+            className={`p-2 rounded-lg transition-colors ${view === 'list' ? 'bg-gold/10' : 'hover:bg-muted'}`}
+            title="List view"
+            onClick={() => setView('list')}
+          >
+            <List className={`w-5 h-5 ${view === 'list' ? 'text-gold' : 'text-muted-foreground'}`} />
           </button>
-          <button className="flex items-center gap-2 px-3 py-2 hover:bg-muted rounded-lg transition-colors text-sm">
+          <button
+            className="flex items-center gap-2 px-3 py-2 hover:bg-muted rounded-lg transition-colors text-sm"
+            onClick={() => setSort(sort === 'updated' ? 'name' : sort === 'name' ? 'size' : 'updated')}
+          >
             <SortAsc className="w-4 h-4" />
-            Sort
+            Sort: {sort}
           </button>
-          <button className="flex items-center gap-2 px-3 py-2 hover:bg-muted rounded-lg transition-colors text-sm">
+          <button
+            className="flex items-center gap-2 px-3 py-2 hover:bg-muted rounded-lg transition-colors text-sm"
+            onClick={() => {
+              const next: typeof filter =
+                filter === 'all'
+                  ? 'recent'
+                  : filter === 'recent'
+                  ? 'starred'
+                  : filter === 'starred'
+                  ? 'shared'
+                  : filter === 'shared'
+                  ? 'owned'
+                  : 'all'
+              setFilter(next)
+            }}
+          >
             <Filter className="w-4 h-4" />
-            Filter
+            Filter: {filter}
           </button>
         </div>
       </div>
@@ -51,15 +153,41 @@ export default function SlidesPage() {
         </div>
       </div>
 
-      {/* Recent Presentations */}
-      <div>
-        <h2 className="text-xl font-semibold text-foreground mb-4">Recent presentations</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {mockPresentations.map((presentation) => (
-            <PresentationCard key={presentation.id} presentation={presentation} />
-          ))}
+      {/* Presentations */}
+      {view === 'grid' ? (
+        <div>
+          <h2 className="text-xl font-semibold text-foreground mb-4">Recent presentations</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {(loading ? mockPresentations : items).map((presentation) => (
+              <PresentationCard key={presentation.id} presentation={presentation} />
+            ))}
+          </div>
         </div>
-      </div>
+      ) : (
+        <div className="bg-card border border-border rounded-lg overflow-hidden">
+          <div className="grid grid-cols-12 gap-4 px-6 py-3 bg-muted/50 border-b border-border text-sm font-medium text-muted-foreground">
+            <div className="col-span-5">Name</div>
+            <div className="col-span-2">Owner</div>
+            <div className="col-span-2">Slides</div>
+            <div className="col-span-3">Last Modified</div>
+          </div>
+          <div className="divide-y divide-border">
+            {(loading ? mockPresentations : items).map((presentation) => (
+              <div key={presentation.id} className="grid grid-cols-12 gap-4 px-6 py-4 hover:bg-muted/50 transition-colors">
+                <div className="col-span-5 flex items-center gap-3">
+                  <div className="p-2 rounded-lg bg-orange-500/10">
+                    <Presentation className="w-5 h-5 text-orange-500" />
+                  </div>
+                  <span className="text-sm font-medium text-foreground truncate">{presentation.name}</span>
+                </div>
+                <div className="col-span-2 text-sm text-muted-foreground">{presentation.owner}</div>
+                <div className="col-span-2 text-sm text-muted-foreground">{presentation.slides} slides</div>
+                <div className="col-span-3 text-sm text-muted-foreground">{presentation.modified}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Floating Action Button */}
       <button

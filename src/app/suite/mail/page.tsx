@@ -1,4 +1,8 @@
+import 'use client'
+
+import { useEffect, useMemo, useState } from 'react'
 import { Mail, Inbox, Send, Star, Trash2, Plus, Search, Paperclip, Calendar } from 'lucide-react'
+import { useFabActionListener } from '@/lib/hooks/useFabActionListener'
 
 /**
  * Mail Page
@@ -10,12 +14,78 @@ import { Mail, Inbox, Send, Star, Trash2, Plus, Search, Paperclip, Calendar } fr
  * - Inbox/sent/drafts/trash folders
  * - Email preview cards
  */
+type EmailData = {
+  id: string
+  sender: string
+  subject: string
+  preview: string
+  time: string
+  unread?: boolean
+  starred?: boolean
+  hasAttachment?: boolean
+}
+
+const USER_ID = 'demo-user'
+
 export default function MailPage() {
+  const [folder, setFolder] = useState<'inbox' | 'sent' | 'drafts' | 'trash'>('inbox')
+  const [emails, setEmails] = useState<EmailData[]>(mockEmails)
+  const [loading, setLoading] = useState(true)
+  const [composeOpen, setComposeOpen] = useState(false)
+  const [composeForm, setComposeForm] = useState({
+    to: '',
+    subject: '',
+    body: '',
+  })
+
+  const load = useMemo(
+    () => async () => {
+      setLoading(true)
+      try {
+        const res = await fetch(`/api/mail?user_id=${USER_ID}&folder=${folder}`)
+        const json = await res.json()
+        if (json?.data) {
+          setEmails(
+            json.data.map((e: any) => ({
+              id: e.id,
+              sender: e.from_address || 'Unknown',
+              subject: e.subject,
+              preview: e.body_text || e.body_html || '',
+              time: new Date((e.created_at || Date.now() / 1000) * 1000).toLocaleString(),
+              unread: !e.is_read,
+              starred: false,
+              hasAttachment: !!e.has_attachments,
+            }))
+          )
+          setLoading(false)
+          return
+        }
+      } catch {
+        /* fallback */
+      }
+      setEmails(mockEmails)
+      setLoading(false)
+    },
+    [folder]
+  )
+
+  useEffect(() => {
+    load()
+  }, [load])
+
+  useFabActionListener({
+    'mail-compose': () => setComposeOpen(true),
+    'mail-draft': () => setComposeOpen(true),
+    'mail-primary': () => setComposeOpen(true),
+  })
   return (
     <div className="flex h-[calc(100vh-4rem)]">
       {/* Folder Sidebar */}
       <aside className="w-64 border-r border-border bg-card p-4 overflow-y-auto">
-        <button className="w-full flex items-center gap-2 px-4 py-3 bg-gold hover:bg-gold-light text-navy-dark rounded-lg transition-all hover:scale-105 mb-6">
+        <button
+          className="w-full flex items-center gap-2 px-4 py-3 bg-gold hover:bg-gold-light text-navy-dark rounded-lg transition-all hover:scale-105 mb-6"
+          onClick={() => setComposeOpen(true)}
+        >
           <Plus className="w-5 h-5" />
           <span className="text-sm font-medium">Compose</span>
         </button>
@@ -43,8 +113,15 @@ export default function MailPage() {
         </div>
 
         <div className="divide-y divide-border">
-          {mockEmails.map((email) => (
-            <EmailListItem key={email.id} email={email} />
+          {(loading ? mockEmails : emails).map((email) => (
+            <EmailListItem key={email.id} email={email} onToggleRead={async () => {
+              try {
+                await fetch(`/api/mail/${email.id}`, { method: 'PATCH' })
+                load()
+              } catch (e) {
+                console.error(e)
+              }
+            }} />
           ))}
         </div>
       </div>
@@ -55,6 +132,92 @@ export default function MailPage() {
           <EmailPreview />
         </div>
       </div>
+
+      {composeOpen && (
+        <div className="fixed inset-0 z-[var(--z-modal)] bg-black/50 flex items-center justify-center px-4">
+          <div className="bg-card border border-border rounded-xl p-6 w-full max-w-2xl shadow-xl space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-semibold text-foreground">Compose</h3>
+              <button className="text-muted-foreground hover:text-foreground" onClick={() => setComposeOpen(false)}>
+                ×
+              </button>
+            </div>
+            <input
+              className="w-full px-3 py-2 bg-muted/50 border border-border rounded-lg text-sm"
+              placeholder="To (comma-separated)"
+              value={composeForm.to}
+              onChange={(e) => setComposeForm((f) => ({ ...f, to: e.target.value }))}
+            />
+            <input
+              className="w-full px-3 py-2 bg-muted/50 border border-border rounded-lg text-sm"
+              placeholder="Subject"
+              value={composeForm.subject}
+              onChange={(e) => setComposeForm((f) => ({ ...f, subject: e.target.value }))}
+            />
+            <textarea
+              className="w-full min-h-[160px] px-3 py-2 bg-muted/50 border border-border rounded-lg text-sm"
+              placeholder="Message..."
+              value={composeForm.body}
+              onChange={(e) => setComposeForm((f) => ({ ...f, body: e.target.value }))}
+            />
+            <div className="flex justify-end gap-2">
+              <button
+                className="px-3 py-2 text-sm rounded-lg bg-muted hover:bg-muted/80"
+                onClick={() => setComposeOpen(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className="px-3 py-2 text-sm rounded-lg bg-muted hover:bg-muted/80"
+                onClick={async () => {
+                  try {
+                    await fetch('/api/mail/draft', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({
+                        userId: USER_ID,
+                        to: composeForm.to.split(',').map((t) => t.trim()).filter(Boolean),
+                        subject: composeForm.subject,
+                        bodyHtml: composeForm.body,
+                      }),
+                    })
+                    setComposeOpen(false)
+                    load()
+                  } catch (e) {
+                    console.error(e)
+                  }
+                }}
+              >
+                Save Draft
+              </button>
+              <button
+                className="px-3 py-2 text-sm rounded-lg bg-gold text-navy-dark hover:bg-gold-light"
+                onClick={async () => {
+                  try {
+                    await fetch('/api/mail/send', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({
+                        userId: USER_ID,
+                        to: composeForm.to.split(',').map((t) => t.trim()).filter(Boolean),
+                        subject: composeForm.subject,
+                        bodyHtml: composeForm.body,
+                        bodyText: composeForm.body,
+                      }),
+                    })
+                    setComposeOpen(false)
+                    load()
+                  } catch (e) {
+                    console.error(e)
+                  }
+                }}
+              >
+                Send
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
@@ -152,6 +315,11 @@ function EmailListItem({ email }: { email: EmailData }) {
       className={`w-full p-4 hover:bg-muted/50 transition-colors text-left ${
         email.unread ? 'bg-muted/30' : ''
       }`}
+      onClick={(e) => {
+        e.preventDefault()
+        e.stopPropagation()
+        email.onToggleRead?.()
+      }}
     >
       <div className="flex items-start gap-3 mb-2">
         <div className="flex-1 min-w-0">

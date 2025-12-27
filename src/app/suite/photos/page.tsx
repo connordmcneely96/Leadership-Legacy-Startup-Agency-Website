@@ -1,4 +1,18 @@
+import 'use client'
+
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useDropzone } from 'react-dropzone'
 import { Image, Upload, Grid, Calendar, Album, Plus } from 'lucide-react'
+import { useFabActionListener } from '@/lib/hooks/useFabActionListener'
+
+type PhotoData = {
+  id: string
+  url: string
+  color?: string
+}
+
+const USER_ID = 'demo-user'
+const R2_BASE = process.env.NEXT_PUBLIC_R2_PUBLIC_BASE || ''
 
 /**
  * Photos Page
@@ -12,12 +26,91 @@ import { Image, Upload, Grid, Calendar, Album, Plus } from 'lucide-react'
  * - Selection mode for bulk actions
  */
 export default function PhotosPage() {
+  const [photos, setPhotos] = useState<PhotoData[]>(mockPhotos)
+  const [loading, setLoading] = useState(true)
+
+  const load = useMemo(
+    () => async () => {
+      setLoading(true)
+      try {
+        const res = await fetch(`/api/files?user_id=${USER_ID}&folder=/photos`)
+        const json = await res.json()
+        if (json?.data) {
+          setPhotos(
+            json.data.map((f: any) => ({
+              id: f.id,
+              url: f.r2_key ? `${R2_BASE}${f.r2_key}` : '',
+              color: 'from-gold to-gold-light',
+            }))
+          )
+          setLoading(false)
+          return
+        }
+      } catch {
+        /* fallback */
+      }
+      setPhotos(mockPhotos)
+      setLoading(false)
+    },
+    []
+  )
+
+  useEffect(() => {
+    load()
+  }, [load])
+
+  useFabActionListener({
+    'photos-upload': () => {
+      // opens dropzone via ref; fallback to click
+      const btn = document.getElementById('photo-upload-button')
+      if (btn) btn.click()
+    },
+    'photos-device': () => {
+      const btn = document.getElementById('photo-upload-button')
+      if (btn) btn.click()
+    },
+    'photos-primary': () => {
+      const btn = document.getElementById('photo-upload-button')
+      if (btn) btn.click()
+    },
+  })
+
+  const onDrop = useCallback(
+    async (acceptedFiles: File[]) => {
+      if (!acceptedFiles.length) return
+      const formData = new FormData()
+      formData.append('userId', USER_ID)
+      formData.append('folderPath', '/photos')
+      acceptedFiles.forEach((file) => formData.append('file', file))
+      try {
+        await fetch('/api/files/upload', {
+          method: 'POST',
+          body: formData,
+        })
+        load()
+      } catch (e) {
+        console.error(e)
+      }
+    },
+    [load]
+  )
+
+  const { getRootProps, getInputProps, open } = useDropzone({
+    onDrop,
+    multiple: true,
+    noClick: true,
+  })
+
   return (
     <div className="flex h-[calc(100vh-4rem)]">
       {/* Secondary Sidebar - Albums */}
       <aside className="w-64 border-r border-border bg-card p-4 overflow-y-auto">
         <div className="mb-6">
-          <button className="w-full flex items-center gap-2 px-4 py-3 bg-gold hover:bg-gold-light text-navy-dark rounded-lg transition-all hover:scale-105">
+          <button
+            id="photo-upload-button"
+            className="w-full flex items-center gap-2 px-4 py-3 bg-gold hover:bg-gold-light text-navy-dark rounded-lg transition-all hover:scale-105"
+            onClick={() => open()}
+          >
             <Upload className="w-5 h-5" />
             <span className="text-sm font-medium">Upload Photos</span>
           </button>
@@ -48,34 +141,17 @@ export default function PhotosPage() {
       </aside>
 
       {/* Main Content */}
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 overflow-y-auto" {...getRootProps()}>
+        <input {...getInputProps()} />
         <div className="p-8 max-w-[1600px] mx-auto">
-          {/* Date Group */}
-          <div className="mb-8">
-            <h2 className="text-lg font-semibold text-foreground mb-4">Today</h2>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-              {mockPhotos.slice(0, 5).map((photo) => (
-                <PhotoCard key={photo.id} photo={photo} />
-              ))}
-            </div>
+          <div className="mb-8 flex items-center justify-between">
+            <h2 className="text-lg font-semibold text-foreground">All Photos</h2>
+            {loading && <span className="text-xs text-muted-foreground">Loading...</span>}
           </div>
-
-          <div className="mb-8">
-            <h2 className="text-lg font-semibold text-foreground mb-4">Yesterday</h2>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-              {mockPhotos.slice(5, 10).map((photo) => (
-                <PhotoCard key={photo.id} photo={photo} />
-              ))}
-            </div>
-          </div>
-
-          <div>
-            <h2 className="text-lg font-semibold text-foreground mb-4">This Week</h2>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-              {mockPhotos.slice(10).map((photo) => (
-                <PhotoCard key={photo.id} photo={photo} />
-              ))}
-            </div>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+            {(loading ? mockPhotos : photos).map((photo) => (
+              <PhotoCard key={photo.id} photo={photo} />
+            ))}
           </div>
         </div>
       </div>
@@ -122,26 +198,23 @@ function AlbumItem({ name, count }: { name: string; count: number }) {
   )
 }
 
-/**
- * Photo Card Component
- */
-interface PhotoData {
-  id: string
-  color: string
-}
-
 const mockPhotos: PhotoData[] = Array.from({ length: 15 }, (_, i) => ({
   id: `photo-${i + 1}`,
+  url: '',
   color: ['from-blue to-blue-light', 'from-gold to-gold-light', 'from-green-500 to-green-400', 'from-purple-500 to-purple-400'][i % 4],
 }))
 
 function PhotoCard({ photo }: { photo: PhotoData }) {
   return (
-    <button className="aspect-square rounded-lg overflow-hidden hover:scale-105 hover:shadow-xl transition-all group relative">
-      <div className={`w-full h-full bg-gradient-to-br ${photo.color} flex items-center justify-center`}>
-        <Image className="w-12 h-12 text-white/30" />
-      </div>
+    <div className="aspect-square rounded-lg overflow-hidden hover:scale-105 hover:shadow-xl transition-all group relative bg-muted/30 border border-border">
+      {photo.url ? (
+        <img src={photo.url} alt="" className="w-full h-full object-cover" loading="lazy" />
+      ) : (
+        <div className={`w-full h-full bg-gradient-to-br ${photo.color} flex items-center justify-center`}>
+          <Image className="w-12 h-12 text-white/30" />
+        </div>
+      )}
       <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
-    </button>
+    </div>
   )
 }
