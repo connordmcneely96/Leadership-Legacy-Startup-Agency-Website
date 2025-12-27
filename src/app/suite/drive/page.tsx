@@ -345,19 +345,7 @@ function FolderItem({ name, count }: { name: string; count: number }) {
   )
 }
 
-/**
- * File Card Component
- */
-interface FileData {
-  id: string
-  name: string
-  type: 'folder' | 'document' | 'image' | 'video'
-  size?: string
-  sizeBytes?: number
-  modified: string
-}
-
-const mockFiles: FileData[] = [
+const mockFiles: DriveFile[] = [
   { id: '1', name: 'Q4 Reports', type: 'folder', modified: '2 hours ago' },
   { id: '2', name: 'Marketing Strategy.doc', type: 'document', size: '2.4 MB', modified: '5 hours ago' },
   { id: '3', name: 'Team Photos', type: 'folder', modified: 'Yesterday' },
@@ -366,7 +354,7 @@ const mockFiles: FileData[] = [
   { id: '6', name: 'Client Assets', type: 'folder', modified: '3 days ago' },
 ]
 
-function mapMimeToType(mime: string): FileData['type'] {
+function mapMimeToType(mime: string): DriveFile['type'] {
   if (!mime) return 'other'
   if (mime.startsWith('image/')) return 'image'
   if (mime.startsWith('video/')) return 'video'
@@ -386,17 +374,19 @@ function FileCard({
   file,
   onDelete,
   onRename,
+  onMove,
 }: {
-  file: FileData
+  file: DriveFile
   onDelete?: (id: string) => void
   onRename?: (id: string, name: string) => void
   onMove?: (id: string) => void
 }) {
-  const icons = {
+  const icons: Record<DriveFile['type'], any> = {
     folder: Folder,
     document: HardDrive,
     image: HardDrive,
     video: HardDrive,
+    other: HardDrive,
   }
 
   const Icon = icons[file.type]

@@ -1,4 +1,4 @@
-import 'use client'
+'use client'
 
 import { useEffect, useMemo, useState } from 'react'
 import { Video, Calendar, Users, Plus, Clock, ExternalLink } from 'lucide-react'
@@ -203,18 +203,6 @@ export default function MeetPage() {
       </div>
     </div>
   )
-}
-
-/**
- * Meeting Card Component
- */
-interface Meeting {
-  id: string
-  title: string
-  time: string
-  duration: string
-  attendees: number
-  host: string
 }
 
 const upcomingMeetings: Meeting[] = [

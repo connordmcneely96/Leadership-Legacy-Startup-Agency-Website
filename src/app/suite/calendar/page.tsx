@@ -1,4 +1,4 @@
-import 'use client'
+'use client'
 
 import { useEffect, useMemo, useState } from 'react'
 import { Calendar, ChevronLeft, ChevronRight, Plus, Clock, Users } from 'lucide-react'
@@ -256,17 +256,6 @@ function MiniCalendar() {
   )
 }
 
-/**
- * Upcoming Event Card
- */
-interface Event {
-  id: string
-  title: string
-  time: string
-  color: string
-  attendees?: number
-}
-
 const upcomingEvents: Event[] = [
   { id: '1', title: 'Team Standup', time: '9:00 AM', color: 'blue', attendees: 8 },
   { id: '2', title: 'Client Meeting', time: '2:00 PM', color: 'gold', attendees: 3 },
@@ -312,17 +301,6 @@ function ViewToggle({ label, active }: { label: string; active?: boolean }) {
       {label}
     </button>
   )
-}
-
-/**
- * Calendar Day Component
- */
-interface CalendarDayData {
-  id: string
-  date: number
-  events: { id: string; title: string; color: string }[]
-  isToday?: boolean
-  isCurrentMonth?: boolean
 }
 
 const calendarDays: CalendarDayData[] = Array.from({ length: 35 }, (_, i) => {

@@ -1,3 +1,5 @@
+'use client'
+
 import { useEffect, useMemo, useState } from 'react'
 import { Sheet, Grid, List, Plus, Filter, SortAsc } from 'lucide-react'
 import { useFabActionListener } from '@/lib/hooks/useFabActionListener'
