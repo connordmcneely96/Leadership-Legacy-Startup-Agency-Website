@@ -1,0 +1,11 @@
+# Cloudflare Pages Configuration
+# This file configures environment variables and bindings for Pages Functions
+
+name = "leadership-legacy-pages"
+compatibility_date = "2025-01-01"
+
+[env.production.vars]
+WORKER_URL = "https://leadership-legacy.YOUR_SUBDOMAIN.workers.dev"
+
+[env.preview.vars]
+WORKER_URL = "https://leadership-legacy.YOUR_SUBDOMAIN.workers.dev"

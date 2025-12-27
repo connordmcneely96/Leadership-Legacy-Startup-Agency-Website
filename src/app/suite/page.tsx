@@ -130,10 +130,42 @@ export default function SuiteDashboard() {
           <div className="bg-card border border-border rounded-lg p-6">
             <h3 className="text-lg font-semibold text-foreground mb-4">Quick Create</h3>
             <div className="grid grid-cols-2 gap-3">
-              <QuickCreateButton icon={FileText} label="Document" />
-              <QuickCreateButton icon={Sheet} label="Sheet" />
-              <QuickCreateButton icon={Presentation} label="Slides" />
-              <QuickCreateButton icon={Calendar} label="Event" />
+              <QuickCreateButton
+                icon={FileText}
+                label="Document"
+                onClick={() => {
+                  if (typeof window !== 'undefined') {
+                    window.location.href = '/suite/documents';
+                  }
+                }}
+              />
+              <QuickCreateButton
+                icon={Sheet}
+                label="Sheet"
+                onClick={() => {
+                  if (typeof window !== 'undefined') {
+                    window.location.href = '/suite/sheets';
+                  }
+                }}
+              />
+              <QuickCreateButton
+                icon={Presentation}
+                label="Slides"
+                onClick={() => {
+                  if (typeof window !== 'undefined') {
+                    window.location.href = '/suite/slides';
+                  }
+                }}
+              />
+              <QuickCreateButton
+                icon={Calendar}
+                label="Event"
+                onClick={() => {
+                  if (typeof window !== 'undefined') {
+                    window.location.href = '/suite/calendar';
+                  }
+                }}
+              />
             </div>
           </div>
 
@@ -259,8 +291,21 @@ function RecentFileItem({ icon: Icon, name, modified, owner, color }: RecentFile
     orange: 'bg-orange-500/10 text-orange-500',
   }
 
+  const handleClick = () => {
+    // Determine which app to open based on icon type
+    const routes: Record<string, string> = {
+      FileText: '/suite/documents',
+      Sheet: '/suite/sheets',
+      Presentation: '/suite/slides',
+    };
+    const route = routes[Icon.name] || '/suite/documents';
+    if (typeof window !== 'undefined') {
+      window.location.href = route;
+    }
+  };
+
   return (
-    <button className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-muted/50 transition-all group">
+    <button onClick={handleClick} className="w-full flex items-center gap-3 p-3 rounded-lg hover:bg-muted/50 transition-all group">
       <div className={`p-2 rounded-lg ${colorClasses[color]}`}>
         <Icon className="w-5 h-5" />
       </div>
@@ -283,11 +328,15 @@ function RecentFileItem({ icon: Icon, name, modified, owner, color }: RecentFile
 interface QuickCreateButtonProps {
   icon: React.ComponentType<{ className?: string }>
   label: string
+  onClick?: () => void
 }
 
-function QuickCreateButton({ icon: Icon, label }: QuickCreateButtonProps) {
+function QuickCreateButton({ icon: Icon, label, onClick }: QuickCreateButtonProps) {
   return (
-    <button className="flex flex-col items-center gap-2 p-4 rounded-lg bg-muted/50 hover:bg-gold/10 hover:border-gold/20 border border-transparent transition-all group">
+    <button
+      onClick={onClick}
+      className="flex flex-col items-center gap-2 p-4 rounded-lg bg-muted/50 hover:bg-gold/10 hover:border-gold/20 border border-transparent transition-all group"
+    >
       <Icon className="w-6 h-6 text-muted-foreground group-hover:text-gold transition-colors" />
       <span className="text-xs font-medium text-muted-foreground group-hover:text-foreground transition-colors">
         {label}
