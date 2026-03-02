@@ -7,6 +7,7 @@ import Creative from "@/components/Creative";
 import Process from "@/components/Process";
 import Outcomes from "@/components/Outcomes";
 import Pricing from "@/components/Pricing";
+import Presentation from "@/components/Presentation";
 import About from "@/components/About";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
@@ -23,6 +24,7 @@ export default function Home() {
       <Process />
       <Outcomes />
       <Pricing />
+      <Presentation />
       <About />
       <Contact />
       <Footer />
