@@ -1,55 +1,61 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { 
-  Database, 
-  Bot, 
-  Globe, 
-  Layout,
-  ArrowRight,
-  FileText
-} from "lucide-react";
+import { Bot, Rocket, Dumbbell, Wrench, Palette, ArrowRight, Star, FileText } from "lucide-react";
 import Link from "next/link";
 
-const pricingTiers = [
-  {
-    icon: Database,
-    name: "RAG Knowledge Bases",
-    description: "Private AI chatbot that answers questions from your documents",
-    startingAt: "$1,500",
-    note: "Typical projects: $1.5k – $4k",
-  },
+const pillars = [
   {
     icon: Bot,
-    name: "AI Workflow Agents",
-    description: "Autonomous agents for lead qualification, support, and reporting",
-    startingAt: "$1,200",
-    note: "Typical projects: $1.2k – $3.5k",
+    name: "AI Development & Automation",
+    description: "Chatbots, AI agents, outbound sales systems, workflow automation, and GoHighLevel integrations.",
+    startingAt: "$300",
+    range: "Projects from $300 – $8,000+",
+    color: "gold",
   },
   {
-    icon: Globe,
-    name: "AI-Powered Web Apps",
-    description: "Full-stack applications with integrated AI capabilities",
-    startingAt: "$2,000",
-    note: "Typical projects: $2k – $6k+",
+    icon: Rocket,
+    name: "AI SaaS & Web Applications",
+    description: "Full-stack SaaS MVPs, RAG knowledge bases, AI voice agents, and Cloudflare edge infrastructure.",
+    startingAt: "$800",
+    range: "Projects from $800 – $20,000+",
+    color: "blue",
   },
   {
-    icon: Layout,
-    name: "Landing Pages",
-    description: "High-converting landing pages optimized for growth",
-    startingAt: "$280",
-    note: "Typical projects: $280 – $1.1k",
+    icon: Dumbbell,
+    name: "AI Fitness & Body Composition",
+    description: "End-to-end AI coaching platforms and body composition systems. No direct competition exists.",
+    startingAt: "$5,000",
+    range: "Projects from $5,000 – $40,000+",
+    badge: "Category Exclusive",
+    color: "gold",
+  },
+  {
+    icon: Wrench,
+    name: "CAD Engineering & AI Video",
+    description: "CAD modeling, engineering drawings, FEA simulation, product demo videos, and API 610/682 packages.",
+    startingAt: "$100",
+    range: "Projects from $100 – $4,000+",
+    badge: "Category Exclusive",
+    color: "blue",
+  },
+  {
+    icon: Palette,
+    name: "Creative & Brand Design",
+    description: "AI video production, YouTube automation, brand identity systems, and full website development.",
+    startingAt: "$300",
+    range: "Projects from $300 – $3,000+",
+    color: "gold",
   },
 ];
 
 export default function Pricing() {
   return (
     <section id="pricing" className="relative py-24 lg:py-32 overflow-hidden">
-      {/* Background */}
       <div className="absolute inset-0 bg-navy" />
 
       <div className="relative max-w-7xl mx-auto px-6 lg:px-8">
-        {/* Section Header */}
+        {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -61,54 +67,59 @@ export default function Pricing() {
             Investment
           </span>
           <h2 className="mt-4 text-3xl lg:text-5xl font-serif font-semibold">
-            Transparent Pricing, Custom Scope
+            Transparent Pricing, No Guesswork
           </h2>
           <p className="mt-6 text-lg text-muted-foreground">
-            Every project is unique. These ranges give you a sense of investment levels—
-            your proposal will include exact pricing based on your specific requirements.
+            Every service has fixed Starter, Professional, and Enterprise tiers with exact pricing. View the full breakdown in our Services section above.
           </p>
         </motion.div>
 
-        {/* Pricing Grid */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
-          {pricingTiers.map((tier, index) => (
-            <motion.div
-              key={tier.name}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="relative p-6 rounded-2xl bg-navy-light/50 border border-white/5 hover:border-gold/20 transition-all duration-300 group"
-            >
-              {/* Icon */}
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-gold/20 to-gold/5 flex items-center justify-center mb-5 group-hover:from-gold/30 group-hover:to-gold/10 transition-colors">
-                <tier.icon className="w-6 h-6 text-gold" />
-              </div>
+        {/* Pillar Cards */}
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
+          {pillars.map((pillar, index) => {
+            const Icon = pillar.icon;
+            return (
+              <motion.div
+                key={pillar.name}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: index * 0.08 }}
+                className="relative p-6 rounded-2xl bg-navy-light/50 border border-white/5 hover:border-gold/20 transition-all duration-300 group"
+              >
+                {pillar.badge && (
+                  <div className="absolute top-4 right-4 flex items-center gap-1 px-2 py-0.5 rounded-full bg-gold/10 border border-gold/20">
+                    <Star className="w-2.5 h-2.5 text-gold fill-gold" />
+                    <span className="text-xs font-bold text-gold">{pillar.badge}</span>
+                  </div>
+                )}
 
-              {/* Name */}
-              <h3 className="text-lg font-semibold text-foreground mb-2">
-                {tier.name}
-              </h3>
-
-              {/* Description */}
-              <p className="text-sm text-muted-foreground mb-4">
-                {tier.description}
-              </p>
-
-              {/* Price */}
-              <div className="mb-2">
-                <span className="text-xs text-muted-foreground">Starting at</span>
-                <div className="text-2xl font-semibold text-gold">
-                  {tier.startingAt}
+                <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-5 transition-colors ${
+                  pillar.color === "gold"
+                    ? "bg-gradient-to-br from-gold/20 to-gold/5 group-hover:from-gold/30 group-hover:to-gold/10"
+                    : "bg-gradient-to-br from-blue/20 to-blue/5 group-hover:from-blue/30 group-hover:to-blue/10"
+                }`}>
+                  <Icon className={`w-6 h-6 ${pillar.color === "gold" ? "text-gold" : "text-blue"}`} />
                 </div>
-              </div>
 
-              {/* Note */}
-              <p className="text-xs text-muted-foreground">
-                {tier.note}
-              </p>
-            </motion.div>
-          ))}
+                <h3 className="text-base font-semibold text-foreground mb-2 pr-16">
+                  {pillar.name}
+                </h3>
+
+                <p className="text-sm text-muted-foreground mb-5 leading-relaxed">
+                  {pillar.description}
+                </p>
+
+                <div className="mb-1">
+                  <span className="text-xs text-muted-foreground">Starting at</span>
+                  <div className={`text-2xl font-bold ${pillar.color === "gold" ? "text-gold" : "text-blue"}`}>
+                    {pillar.startingAt}
+                  </div>
+                </div>
+                <p className="text-xs text-muted-foreground">{pillar.range}</p>
+              </motion.div>
+            );
+          })}
         </div>
 
         {/* CTA Box */}
@@ -125,9 +136,8 @@ export default function Pricing() {
                 Ready to scope your project?
               </h3>
               <p className="text-muted-foreground mb-6">
-                Every engagement begins with a discovery call. We&apos;ll discuss your 
-                goals, assess feasibility, and prepare a detailed proposal with 
-                exact pricing—all formalized in a clear Statement of Work.
+                Every engagement begins with a discovery call. We&apos;ll discuss your goals,
+                confirm the right tier for your scope, and formalize everything in a clear Statement of Work.
               </p>
               <div className="flex items-center gap-3 text-sm text-muted-foreground">
                 <FileText className="w-5 h-5 text-gold" />
@@ -144,12 +154,9 @@ export default function Pricing() {
               </Link>
             </div>
           </div>
-
-          {/* Decorative Glow */}
           <div className="absolute -inset-px rounded-3xl glow-gold opacity-30 pointer-events-none" />
         </motion.div>
       </div>
     </section>
   );
 }
-

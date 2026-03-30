@@ -6,13 +6,15 @@ import Link from "next/link";
 
 const footerLinks = {
   services: [
-    { name: "RAG Knowledge Bases", href: "#services" },
-    { name: "AI Workflow Agents", href: "#services" },
-    { name: "LLM Fine-Tuning", href: "#services" },
-    { name: "Web Development", href: "#services" },
+    { name: "AI Development & Automation", href: "#services" },
+    { name: "AI SaaS & Web Applications", href: "#services" },
+    { name: "AI Fitness Platforms", href: "#services" },
+    { name: "CAD Engineering & AI Video", href: "#services" },
+    { name: "Creative & Brand Design", href: "#services" },
   ],
   company: [
     { name: "About", href: "#about" },
+    { name: "Portfolio", href: "#portfolio" },
     { name: "Process", href: "#process" },
     { name: "Pricing", href: "#pricing" },
     { name: "Contact", href: "#contact" },

@@ -1,35 +1,35 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowRight, Bot, Database, Workflow, MessageSquare } from "lucide-react";
+import { ArrowRight, Bot, Wrench, Dumbbell, Palette } from "lucide-react";
 import Link from "next/link";
 
 const floatingCards = [
   {
     icon: Bot,
-    title: "AI Agent",
-    subtitle: "Lead Qualification",
+    title: "AI Agents & SaaS",
+    subtitle: "Automation & Development",
     position: "top-8 right-8",
     delay: 0.8,
   },
   {
-    icon: Database,
-    title: "RAG System",
-    subtitle: "Knowledge Base",
+    icon: Dumbbell,
+    title: "Fitness AI Platforms",
+    subtitle: "Category Exclusive",
     position: "top-32 right-48",
     delay: 1.0,
   },
   {
-    icon: Workflow,
-    title: "Automation",
-    subtitle: "Workflow Engine",
+    icon: Wrench,
+    title: "CAD Engineering",
+    subtitle: "AI Product Videos",
     position: "bottom-32 right-16",
     delay: 1.2,
   },
   {
-    icon: MessageSquare,
-    title: "Chat Interface",
-    subtitle: "Document Q&A",
+    icon: Palette,
+    title: "Brand & Creative",
+    subtitle: "Identity & Design",
     position: "bottom-8 right-56",
     delay: 1.4,
   },
