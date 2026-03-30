@@ -1,179 +1,1133 @@
 "use client";
 
-import { motion, type Variants } from "framer-motion";
-import { 
-  Database, 
-  Bot, 
-  Brain, 
-  Cloud,
-  ArrowRight,
-  CheckCircle2
-} from "lucide-react";
+import { useState } from "react";
+import { motion, AnimatePresence, type Variants } from "framer-motion";
+import { Bot, Rocket, Dumbbell, Wrench, Palette, ChevronDown, Check, Star } from "lucide-react";
 
-const services = [
+type Tier = {
+  name: "Starter" | "Professional" | "Enterprise";
+  price: string;
+  delivery: string;
+  deliverables: string[];
+};
+
+type ServiceDef = {
+  id: string;
+  name: string;
+  customQuote?: { copy: string; cta: string };
+  tiers?: Tier[];
+};
+
+type PillarDef = {
+  id: number;
+  shortName: string;
+  fullName: string;
+  Icon: React.ComponentType<{ className?: string }>;
+  badge?: string;
+  services: ServiceDef[];
+};
+
+const PILLARS: PillarDef[] = [
   {
-    icon: Database,
-    title: "RAG Knowledge Bases",
-    tagline: "Chat with your documents",
-    description: "Build intelligent knowledge bases that let your team and customers query internal documents, policies, and data using natural language.",
-    outcomes: [
-      "Reduce support ticket volume by 40%",
-      "Cut document search time from hours to seconds",
-      "Enable 24/7 self-service information access"
+    id: 1,
+    shortName: "AI Dev & Automation",
+    fullName: "AI Development & Automation",
+    Icon: Bot,
+    services: [
+      {
+        id: "1A",
+        name: "AI Chatbots & Virtual Assistants",
+        tiers: [
+          {
+            name: "Starter",
+            price: "$500",
+            delivery: "3–5 days",
+            deliverables: [
+              "Rule-based / GPT bot with 10 conversation flows",
+              "Single-channel deployment",
+              "FAQ integration",
+              "Embed code for your website",
+            ],
+          },
+          {
+            name: "Professional",
+            price: "$1,500",
+            delivery: "7–10 days",
+            deliverables: [
+              "GPT-4/Claude bot with 30 conversation flows",
+              "2-channel deployment",
+              "CRM integration & lead capture",
+              "Admin dashboard",
+              "30-day post-launch support",
+            ],
+          },
+          {
+            name: "Enterprise",
+            price: "$4,000",
+            delivery: "14–21 days",
+            deliverables: [
+              "Multi-channel deployment",
+              "RAG integration with AI memory",
+              "Full CRM + calendar + ticketing",
+              "Human handoff & real-time analytics",
+              "Voice option available",
+              "60-day post-launch support",
+            ],
+          },
+        ],
+      },
+      {
+        id: "1B",
+        name: "Business Automation & AI Workflows",
+        tiers: [
+          {
+            name: "Starter",
+            price: "$300",
+            delivery: "2–5 days",
+            deliverables: [
+              "1 automated workflow with 5-step process",
+              "Trigger setup",
+              "1 app integration (n8n / Make / Zapier)",
+              "Workflow export + documentation",
+            ],
+          },
+          {
+            name: "Professional",
+            price: "$800",
+            delivery: "5–10 days",
+            deliverables: [
+              "3 AI-powered workflows",
+              "GPT/Claude decision nodes",
+              "3 app integrations with error handling",
+              "Loom walkthrough video",
+              "14-day support",
+            ],
+          },
+          {
+            name: "Enterprise",
+            price: "$3,000",
+            delivery: "14–21 days",
+            deliverables: [
+              "5+ full AI workflows",
+              "AI at every decision point",
+              "Custom code nodes + unlimited integrations",
+              "Error monitoring dashboard",
+              "Self-hosted n8n option",
+              "Staff training + 30-day support",
+            ],
+          },
+        ],
+      },
+      {
+        id: "1C",
+        name: "Custom AI Agents",
+        tiers: [
+          {
+            name: "Starter",
+            price: "$500",
+            delivery: "5–10 days",
+            deliverables: [
+              "Single-purpose agent with 1–3 tools",
+              "Python + LangChain implementation",
+              "Basic memory",
+              "API endpoint + documentation",
+            ],
+          },
+          {
+            name: "Professional",
+            price: "$2,500",
+            delivery: "14–21 days",
+            deliverables: [
+              "Multi-tool agent (5–10 tools)",
+              "LangGraph/CrewAI orchestration",
+              "Persistent memory + API & webhook",
+              "Custom UI + architecture documentation",
+              "30-day support",
+            ],
+          },
+          {
+            name: "Enterprise",
+            price: "$8,000",
+            delivery: "28–45 days",
+            deliverables: [
+              "Full multi-agent orchestration system",
+              "Supervisor + specialist agent teams with 10+ tools",
+              "MCP integration + long-term memory (Mem0/Pinecone)",
+              "LangSmith monitoring + web dashboard",
+              "CI/CD pipeline",
+              "60-day support",
+            ],
+          },
+        ],
+      },
+      {
+        id: "1D",
+        name: "AI-Powered Outbound Sales Systems",
+        tiers: [
+          {
+            name: "Starter",
+            price: "$600",
+            delivery: "5–10 days",
+            deliverables: [
+              "Apollo sequence setup",
+              "3 email templates",
+              "Lead enrichment",
+              "CRM integration + reporting dashboard",
+            ],
+          },
+          {
+            name: "Professional",
+            price: "$2,500",
+            delivery: "14–21 days",
+            deliverables: [
+              "AI SDR agent with ICP lead scoring",
+              "Multi-channel outreach (email + LinkedIn + SMS)",
+              "5-touch AI follow-up sequence",
+              "CRM automation + real-time monitoring",
+              "Reply detection",
+            ],
+          },
+          {
+            name: "Enterprise",
+            price: "$6,000",
+            delivery: "28–45 days",
+            deliverables: [
+              "Full AI outbound system",
+              "AI personalization at 100+ leads/day",
+              "Lead scoring model + full CRM automation",
+              "KPI dashboard",
+              "Staff training + 60-day support",
+            ],
+          },
+        ],
+      },
+      {
+        id: "1E",
+        name: "GoHighLevel + AI Integration",
+        tiers: [
+          {
+            name: "Starter",
+            price: "$300",
+            delivery: "3–7 days",
+            deliverables: [
+              "GHL workflow setup",
+              "AI follow-up sequences",
+              "Basic chatbot integration",
+              "CRM pipeline configuration",
+            ],
+          },
+          {
+            name: "Professional",
+            price: "$1,200",
+            delivery: "7–14 days",
+            deliverables: [
+              "Full GHL + AI chatbot build",
+              "Multi-step AI nurture workflows",
+              "Appointment booking automation",
+              "SMS + email + voicemail drops",
+              "Full pipeline lifecycle management",
+            ],
+          },
+          {
+            name: "Enterprise",
+            price: "$3,000",
+            delivery: "14–28 days",
+            deliverables: [
+              "Agency sub-account architecture",
+              "AI SDR inside GHL",
+              "Complete sales funnel + VAPI voice integration",
+              "Full automation suite + snapshot for resale",
+              "Staff training + SOP documentation",
+            ],
+          },
+        ],
+      },
     ],
-    color: "gold",
   },
   {
-    icon: Bot,
-    title: "AI Workflow Agents",
-    tagline: "Automate business processes",
-    description: "Deploy autonomous AI agents that handle lead qualification, support triage, reporting, and other repetitive workflows with human-level intelligence.",
-    outcomes: [
-      "Automate 80% of repetitive tasks",
-      "Qualify leads 24/7 without human intervention",
-      "Generate reports and insights on demand"
+    id: 2,
+    shortName: "AI SaaS & Web Apps",
+    fullName: "AI SaaS & Web Application Development",
+    Icon: Rocket,
+    services: [
+      {
+        id: "2A",
+        name: "AI SaaS MVP Development",
+        tiers: [
+          {
+            name: "Starter",
+            price: "$2,500",
+            delivery: "14–21 days",
+            deliverables: [
+              "MVP with 1 core AI feature",
+              "React + Node/Python backend",
+              "1 LLM integration + basic auth",
+              "Cloudflare Pages deployment",
+              "GitHub repo",
+            ],
+          },
+          {
+            name: "Professional",
+            price: "$8,000",
+            delivery: "28–42 days",
+            deliverables: [
+              "Full MVP with 3–5 AI features",
+              "Next.js + D1 database + REST API",
+              "Multi-LLM + full auth + Stripe billing",
+              "Admin dashboard + mobile responsive",
+              "CI/CD pipeline + 30-day warranty",
+            ],
+          },
+          {
+            name: "Enterprise",
+            price: "$20,000",
+            delivery: "60–90 days",
+            deliverables: [
+              "Production-grade SaaS platform",
+              "Multi-tenant architecture",
+              "Full AI suite (agents + RAG + automation)",
+              "Analytics dashboards + white-label ready",
+              "Load testing + 60-day support",
+            ],
+          },
+        ],
+      },
+      {
+        id: "2B",
+        name: "RAG Knowledge Base Systems",
+        tiers: [
+          {
+            name: "Starter",
+            price: "$800",
+            delivery: "7–14 days",
+            deliverables: [
+              "Vector DB setup (Chroma/FAISS)",
+              "1 document type, up to 500 pages ingested",
+              "Basic chunking",
+              "Simple query API",
+              "Accuracy testing report",
+            ],
+          },
+          {
+            name: "Professional",
+            price: "$2,500",
+            delivery: "21–30 days",
+            deliverables: [
+              "Pinecone/Qdrant vector DB",
+              "3 document types + web scraping",
+              "Advanced chunking + hybrid search",
+              "React/Streamlit chat UI with source citation",
+              "Re-ranking pipeline + 30-day support",
+            ],
+          },
+          {
+            name: "Enterprise",
+            price: "$6,000",
+            delivery: "45–60 days",
+            deliverables: [
+              "Full production RAG application",
+              "Unlimited sources + document types",
+              "Auto-sync ingestion pipeline",
+              "Multi-tenant access with RBAC",
+              "Full chat UI + analytics",
+              "Cloudflare edge deployment + 60-day support",
+            ],
+          },
+        ],
+      },
+      {
+        id: "2C",
+        name: "AI Voice Agent Systems",
+        tiers: [
+          {
+            name: "Starter",
+            price: "$800",
+            delivery: "5–10 days",
+            deliverables: [
+              "VAPI/Twilio inbound voice agent",
+              "FAQ handling",
+              "1 phone number",
+              "Call transcript logging",
+              "ElevenLabs natural voice",
+            ],
+          },
+          {
+            name: "Professional",
+            price: "$2,000",
+            delivery: "10–21 days",
+            deliverables: [
+              "Full AI receptionist",
+              "Calendly/GHL booking integration",
+              "CRM capture on every call",
+              "Custom ElevenLabs voice",
+              "Recording + transcription + human escalation",
+              "Analytics + 30-day support",
+            ],
+          },
+          {
+            name: "Enterprise",
+            price: "$5,000",
+            delivery: "21–35 days",
+            deliverables: [
+              "Inbound + outbound system",
+              "Multi-scenario call flows",
+              "Full CRM + deal creation",
+              "AI call analysis (sentiment + intent scoring)",
+              "Custom voice clone + outbound campaign module",
+              "Real-time dashboard + staff training + 60-day support",
+            ],
+          },
+        ],
+      },
+      {
+        id: "2D",
+        name: "Cloudflare Edge AI Infrastructure",
+        tiers: [
+          {
+            name: "Starter",
+            price: "$800",
+            delivery: "5–10 days",
+            deliverables: [
+              "Cloudflare Workers AI deployment",
+              "1 AI model at edge",
+              "D1 database + R2 storage + KV caching",
+              "REST API endpoint",
+            ],
+          },
+          {
+            name: "Professional",
+            price: "$3,000",
+            delivery: "14–28 days",
+            deliverables: [
+              "CF AI Gateway setup",
+              "Multi-model routing + semantic caching",
+              "Rate limiting",
+              "Full D1 + R2 + KV stack",
+              "Analytics dashboard + Cloudflare Pages frontend",
+              "30-day support",
+            ],
+          },
+          {
+            name: "Enterprise",
+            price: "$8,000",
+            delivery: "30–60 days",
+            deliverables: [
+              "Full production edge AI system",
+              "100+ global PoP distribution",
+              "Multi-tenant Cloudflare architecture",
+              "Durable Objects for stateful agents",
+              "AI Gateway observability + zero cold-start design",
+              "CI/CD + cost optimization audit + 60-day support",
+            ],
+          },
+        ],
+      },
     ],
-    color: "blue",
   },
   {
-    icon: Brain,
-    title: "LLM Fine-Tuning",
-    tagline: "Custom models for your brand",
-    description: "Train language models on your unique data to capture brand voice, domain expertise, and institutional knowledge for consistent, on-brand AI outputs.",
-    outcomes: [
-      "90%+ brand voice consistency",
-      "Domain-specific accuracy improvements",
-      "Reduced hallucination rates"
+    id: 3,
+    shortName: "AI Fitness Platforms",
+    fullName: "AI Fitness & Body Composition Platforms",
+    Icon: Dumbbell,
+    badge: "Category Exclusive",
+    services: [
+      {
+        id: "3A",
+        name: "AI Fitness Coaching Platform",
+        tiers: [
+          {
+            name: "Starter",
+            price: "$10,000",
+            delivery: "4–5 weeks",
+            deliverables: [
+              "Branded AI coaching platform",
+              "Workout plan generator",
+              "Progress tracking + client portal",
+              "AI check-in system",
+              "Mobile responsive + Stripe billing",
+            ],
+          },
+          {
+            name: "Professional",
+            price: "$20,000",
+            delivery: "6–8 weeks",
+            deliverables: [
+              "Full AI coaching platform",
+              "Multi-client management",
+              "Adaptive program logic + nutrition tracking",
+              "AI chat coach + progress photo analysis",
+              "Coach admin dashboard",
+              "Calendly + Stripe + email integrations + 60-day support",
+            ],
+          },
+          {
+            name: "Enterprise",
+            price: "$40,000",
+            delivery: "10–14 weeks",
+            deliverables: [
+              "Enterprise fitness SaaS, white-label ready",
+              "Multi-gym / franchise support",
+              "AI periodization engine + body composition analysis",
+              "Supplement AI advisor + community features",
+              "React Native mobile app",
+              "Full analytics + maintenance retainer",
+            ],
+          },
+        ],
+      },
+      {
+        id: "3B",
+        name: "Body Composition AI System",
+        tiers: [
+          {
+            name: "Starter",
+            price: "$5,000",
+            delivery: "3–4 weeks",
+            deliverables: [
+              "AI body composition calculator",
+              "Photo-based analysis interface",
+              "Macro targets output",
+              "Progress tracking",
+              "Basic client dashboard",
+            ],
+          },
+          {
+            name: "Professional",
+            price: "$10,000",
+            delivery: "5–7 weeks",
+            deliverables: [
+              "Advanced body comp AI engine",
+              "Scan data integration (DEXA/InBody)",
+              "Predictive modeling",
+              "Periodized nutrition and training AI outputs",
+              "Multi-client coach dashboard",
+              "Stripe billing + 45-day support",
+            ],
+          },
+          {
+            name: "Enterprise",
+            price: "$20,000",
+            delivery: "8–12 weeks",
+            deliverables: [
+              "Full production body comp SaaS",
+              "White-label ready + multi-practitioner support",
+              "Custom AI model trained on client data",
+              "Wearable + lab data integrations",
+              "Full analytics suite",
+              "60-day support",
+            ],
+          },
+        ],
+      },
     ],
-    color: "gold",
   },
   {
-    icon: Cloud,
-    title: "AWS Bedrock & Enterprise AI",
-    tagline: "Scalable, secure infrastructure",
-    description: "Implement enterprise-grade AI infrastructure on AWS Bedrock with proper security, compliance, and scalability for production workloads.",
-    outcomes: [
-      "SOC 2 and HIPAA-compliant deployments",
-      "99.9% uptime SLA guarantee",
-      "Seamless scaling from MVP to millions of users"
+    id: 4,
+    shortName: "CAD Engineering & AI Video",
+    fullName: "CAD Engineering & AI Video",
+    Icon: Wrench,
+    badge: "Category Exclusive",
+    services: [
+      {
+        id: "4A",
+        name: "CAD-to-AI Product Demo Video",
+        tiers: [
+          {
+            name: "Starter",
+            price: "$800",
+            delivery: "5–7 days",
+            deliverables: [
+              "3 rendered views from CAD model",
+              "AI-narrated script",
+              "60-second 1080p video",
+              "1 revision round",
+            ],
+          },
+          {
+            name: "Professional",
+            price: "$2,000",
+            delivery: "10–14 days",
+            deliverables: [
+              "8 rendered views + exploded assembly animation",
+              "2-minute 1080p video",
+              "Branded intro/outro",
+              "Lower thirds with engineering specs",
+              "3 revision rounds",
+            ],
+          },
+          {
+            name: "Enterprise",
+            price: "$4,000",
+            delivery: "18–25 days",
+            deliverables: [
+              "Full render suite + motion assembly animation",
+              "3-minute 4K video",
+              "All format exports (16:9 / 9:16 / 1:1)",
+              "Source files included",
+              "Unlimited revisions",
+              "Trade show package",
+            ],
+          },
+        ],
+      },
+      {
+        id: "4B",
+        name: "CAD Modeling (SolidWorks / FreeCAD)",
+        tiers: [
+          {
+            name: "Starter",
+            price: "$150",
+            delivery: "2–3 days",
+            deliverables: [
+              "Single part or simple assembly",
+              "Parametric 3D model",
+              "STEP + IGES + native files",
+              "2 revision rounds",
+            ],
+          },
+          {
+            name: "Professional",
+            price: "$300",
+            delivery: "3–7 days",
+            deliverables: [
+              "Multi-part assembly (up to 30 components)",
+              "Interference/clearance checks",
+              "Motion simulation",
+              "Exploded view + BOM with part numbers",
+              "Assembly instructions document",
+            ],
+          },
+          {
+            name: "Enterprise",
+            price: "$1,500",
+            delivery: "14–30 days",
+            deliverables: [
+              "Full industrial machine or equipment skid",
+              "Vendor-spec integration",
+              "Nozzle/flange orientation",
+              "Structural design overlay",
+              "Complete file package per client drawing standard",
+            ],
+          },
+        ],
+      },
+      {
+        id: "4C",
+        name: "Engineering Drawing Packages",
+        tiers: [
+          {
+            name: "Starter",
+            price: "$100",
+            delivery: "1–3 days",
+            deliverables: [
+              "Single part drawing",
+              "3 standard views + isometric",
+              "Basic dims + tolerances per ASME Y14.5",
+              "PDF + DXF delivery",
+            ],
+          },
+          {
+            name: "Professional",
+            price: "$250",
+            delivery: "2–5 days",
+            deliverables: [
+              "Multi-part drawing package",
+              "Full GD&T per ASME Y14.5",
+              "Surface finish callouts",
+              "Assembly drawing + BOM",
+              "Revision block",
+            ],
+          },
+          {
+            name: "Enterprise",
+            price: "$800",
+            delivery: "5–10 days",
+            deliverables: [
+              "Complete drawing package (10–50 sheets)",
+              "Manufacturing-stamp ready",
+              "ASME Y14.5-2018 compliant",
+              "Weld symbols",
+              "Client drawing standard compliance",
+            ],
+          },
+        ],
+      },
+      {
+        id: "4D",
+        name: "FEA / Structural Simulation",
+        tiers: [
+          {
+            name: "Starter",
+            price: "$500",
+            delivery: "3–5 days",
+            deliverables: [
+              "Single load case",
+              "Von Mises stress contour",
+              "Displacement plot",
+              "Safety factor calculation",
+              "1-page summary report",
+            ],
+          },
+          {
+            name: "Professional",
+            price: "$800",
+            delivery: "7–14 days",
+            deliverables: [
+              "Multiple load cases",
+              "Assembly-level analysis",
+              "Fatigue life estimation",
+              "Mesh convergence study",
+              "Full engineering report (10–20 pages)",
+            ],
+          },
+          {
+            name: "Enterprise",
+            price: "$3,000",
+            delivery: "14–30 days",
+            deliverables: [
+              "Thermal + structural coupled analysis",
+              "Non-linear / large deformation",
+              "ASME code-compliant reporting",
+              "PE-stamp-ready documentation",
+              "Design optimization recommendations",
+            ],
+          },
+        ],
+      },
+      {
+        id: "4E",
+        name: "API 610/682 Rotating Equipment Engineering",
+        customQuote: {
+          copy: "Full pump specification packages, hydraulic sizing and curve analysis, mechanical seal system design, seal flush plans (Plan 11/21/32/53A), vendor TBE, and API 610/682 compliance documentation. Project rates from $2,500. Retainer engagements available.",
+          cta: "Request Scope",
+        },
+      },
     ],
-    color: "blue",
+  },
+  {
+    id: 5,
+    shortName: "Creative & Brand Design",
+    fullName: "Creative & Brand Design",
+    Icon: Palette,
+    services: [
+      {
+        id: "5A",
+        name: "AI-Assisted Video Production",
+        tiers: [
+          {
+            name: "Starter",
+            price: "$300",
+            delivery: "2–3 days",
+            deliverables: [
+              "1 × 30-second AI video",
+              "Stock/AI visuals + AI voiceover",
+              "Text overlays + branding",
+              "1080p MP4 + 2 revisions",
+            ],
+          },
+          {
+            name: "Professional",
+            price: "$800",
+            delivery: "5–7 days",
+            deliverables: [
+              "3 × 30–60 second videos",
+              "AI scriptwriting + AI voiceover + music",
+              "Captions/SRT files + 3 custom thumbnails",
+              "All platform cuts (16:9 / 9:16 / 1:1)",
+              "3 revisions + 14-day support",
+            ],
+          },
+          {
+            name: "Enterprise",
+            price: "$2,000",
+            delivery: "14 days",
+            deliverables: [
+              "12-video campaign pack",
+              "Full AI script suite",
+              "ElevenLabs professional voiceover",
+              "Full branding overlay across all videos",
+              "Captions + SRT all formats + 12 thumbnails",
+              "Content calendar + unlimited revisions",
+            ],
+          },
+        ],
+      },
+      {
+        id: "5B",
+        name: "Faceless YouTube Channel Setup & Automation",
+        tiers: [
+          {
+            name: "Starter",
+            price: "$500",
+            delivery: "5–7 days",
+            deliverables: [
+              "Full channel setup",
+              "3 faceless AI videos",
+              "Thumbnail templates",
+              "Basic SEO setup",
+              "Content calendar",
+            ],
+          },
+          {
+            name: "Professional",
+            price: "$1,500",
+            delivery: "10–14 days",
+            deliverables: [
+              "Complete channel build",
+              "8 SEO-optimized AI videos",
+              "Title/description/tag system",
+              "Custom thumbnail system",
+              "Shorts strategy + 30-day posting schedule",
+            ],
+          },
+          {
+            name: "Enterprise",
+            price: "$2,500",
+            delivery: "14–21 days",
+            deliverables: [
+              "Full YouTube automation channel",
+              "12 scripted + AI-voiced + edited videos",
+              "Monetization path guide",
+              "n8n auto-posting pipeline",
+              "Analytics dashboard + 30-day support",
+            ],
+          },
+        ],
+      },
+      {
+        id: "5C",
+        name: "Brand Identity",
+        tiers: [
+          {
+            name: "Starter",
+            price: "$800",
+            delivery: "4–6 days",
+            deliverables: [
+              "Logo (primary + variations)",
+              "Color palette + typography",
+              "Brand style guide PDF (10–15 pages)",
+              "Business card design",
+            ],
+          },
+          {
+            name: "Professional",
+            price: "$1,500",
+            delivery: "7–10 days",
+            deliverables: [
+              "All Starter deliverables",
+              "Email signature + letterhead",
+              "Social media templates (5 formats)",
+              "Secondary brand elements",
+              "Brand voice guide",
+            ],
+          },
+          {
+            name: "Enterprise",
+            price: "$3,000",
+            delivery: "10–14 days",
+            deliverables: [
+              "Complete brand system",
+              "Pattern/texture + photography style guide",
+              "Custom icon set",
+              "Brand application mockups (10+)",
+              "Full source files",
+            ],
+          },
+        ],
+      },
+      {
+        id: "5D",
+        name: "Website Design & Development",
+        tiers: [
+          {
+            name: "Starter",
+            price: "$500",
+            delivery: "5–7 days",
+            deliverables: [
+              "3-page site (Home / About / Contact)",
+              "Contact form + mobile responsive",
+              "Basic SEO",
+              "Cloudflare hosting setup",
+            ],
+          },
+          {
+            name: "Professional",
+            price: "$1,500",
+            delivery: "10–14 days",
+            deliverables: [
+              "6-page website",
+              "Lead capture funnel",
+              "Google Maps + full SEO setup",
+              "GA4 analytics + domain/DNS configuration",
+              "Unlimited revisions",
+            ],
+          },
+          {
+            name: "Enterprise",
+            price: "$3,000",
+            delivery: "18–25 days",
+            deliverables: [
+              "8+ page website",
+              "CRM integration + blog setup",
+              "AI chatbot integration",
+              "Advanced SEO + performance optimization",
+              "30-day post-launch support",
+            ],
+          },
+        ],
+      },
+    ],
   },
 ];
 
+const tierStyle = {
+  Starter: {
+    border: "border-white/10",
+    badge: "bg-white/5 text-muted-foreground",
+    price: "text-foreground",
+    check: "text-blue",
+  },
+  Professional: {
+    border: "border-blue/30",
+    badge: "bg-blue/10 text-blue",
+    price: "text-blue",
+    check: "text-blue",
+  },
+  Enterprise: {
+    border: "border-gold/40",
+    badge: "bg-gold/10 text-gold",
+    price: "text-gold",
+    check: "text-gold",
+  },
+};
+
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.15,
-    },
-  },
+  visible: { opacity: 1, transition: { staggerChildren: 0.08 } },
 };
 
 const itemVariants: Variants = {
-  hidden: { opacity: 0, y: 30 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.6, ease: "easeOut" as const },
-  },
+  hidden: { opacity: 0, y: 16 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.45, ease: "easeOut" } },
 };
 
 export default function Services() {
+  const [activePillar, setActivePillar] = useState(0);
+  const [openServices, setOpenServices] = useState<Set<string>>(
+    new Set([PILLARS[0].services[0].id])
+  );
+
+  const toggleService = (id: string) => {
+    setOpenServices((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  const selectPillar = (index: number) => {
+    setActivePillar(index);
+    setOpenServices(new Set([PILLARS[index].services[0].id]));
+  };
+
+  const pillar = PILLARS[activePillar];
+
   return (
     <section id="services" className="relative py-24 lg:py-32 overflow-hidden">
-      {/* Background */}
       <div className="absolute inset-0 bg-navy" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-navy-light/50 via-transparent to-transparent" />
 
       <div className="relative max-w-7xl mx-auto px-6 lg:px-8">
-        {/* Section Header */}
+        {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-center max-w-3xl mx-auto mb-20"
+          className="text-center max-w-3xl mx-auto mb-16"
         >
           <span className="text-sm font-medium text-gold uppercase tracking-wider">
-            Flagship Services
+            Full Service Menu
           </span>
           <h2 className="mt-4 text-3xl lg:text-5xl font-serif font-semibold">
-            AI Systems We Build
+            What We Build
           </h2>
           <p className="mt-6 text-lg text-muted-foreground">
-            Production-grade AI solutions that deliver measurable business outcomes—not experiments or prototypes.
+            Five pillars. Every deliverable, price, and timeline — laid out with no ambiguity.
           </p>
         </motion.div>
 
-        {/* Services Grid */}
+        {/* Pillar Tabs */}
         <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="grid lg:grid-cols-2 gap-8"
+          transition={{ duration: 0.5, delay: 0.1 }}
+          className="flex flex-wrap gap-3 justify-center mb-12"
         >
-          {services.map((service) => (
-            <motion.div
-              key={service.title}
-              variants={itemVariants}
-              className="group relative"
-            >
-              <div className="relative h-full p-8 lg:p-10 rounded-3xl bg-gradient-to-br from-navy-light to-navy-light/50 border border-white/5 hover:border-gold/20 transition-all duration-500">
-                {/* Icon & Header */}
-                <div className="flex items-start gap-5 mb-6">
-                  <div className={`w-16 h-16 rounded-2xl flex items-center justify-center shrink-0 ${
-                    service.color === "gold" 
-                      ? "bg-gradient-to-br from-gold/20 to-gold/5" 
-                      : "bg-gradient-to-br from-blue/20 to-blue/5"
-                  }`}>
-                    <service.icon className={`w-8 h-8 ${service.color === "gold" ? "text-gold" : "text-blue"}`} />
-                  </div>
-                  <div>
-                    <h3 className="text-2xl font-semibold text-foreground mb-1">
-                      {service.title}
-                    </h3>
-                    <p className={`text-sm font-medium ${service.color === "gold" ? "text-gold" : "text-blue"}`}>
-                      {service.tagline}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Description */}
-                <p className="text-muted-foreground leading-relaxed mb-8">
-                  {service.description}
-                </p>
-
-                {/* Outcomes */}
-                <div className="space-y-3">
-                  <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                    Expected Outcomes
-                  </p>
-                  {service.outcomes.map((outcome) => (
-                    <div key={outcome} className="flex items-start gap-3">
-                      <CheckCircle2 className={`w-5 h-5 mt-0.5 shrink-0 ${service.color === "gold" ? "text-gold" : "text-blue"}`} />
-                      <span className="text-sm text-foreground/80">{outcome}</span>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Hover Arrow */}
-                <div className="absolute bottom-8 right-8 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <ArrowRight className={`w-6 h-6 ${service.color === "gold" ? "text-gold" : "text-blue"}`} />
-                </div>
-
-                {/* Subtle Glow on Hover */}
-                <div className={`absolute -inset-px rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none ${
-                  service.color === "gold" ? "glow-gold" : "glow-blue"
-                }`} />
-              </div>
-            </motion.div>
-          ))}
+          {PILLARS.map((p, i) => {
+            const Icon = p.Icon;
+            const active = activePillar === i;
+            return (
+              <button
+                key={p.id}
+                onClick={() => selectPillar(i)}
+                className={`flex items-center gap-2 px-5 py-3 rounded-2xl text-sm font-medium transition-all duration-300 ${
+                  active
+                    ? "bg-gold text-navy shadow-lg"
+                    : "bg-navy-light/60 border border-white/10 text-muted-foreground hover:text-foreground hover:bg-navy-light"
+                }`}
+              >
+                <Icon className="w-4 h-4 shrink-0" />
+                <span>{p.shortName}</span>
+                {p.badge && (
+                  <span
+                    className={`ml-1 text-xs px-1.5 py-0.5 rounded-full font-bold ${
+                      active ? "bg-navy/20 text-navy" : "bg-gold/10 text-gold"
+                    }`}
+                  >
+                    ★
+                  </span>
+                )}
+              </button>
+            );
+          })}
         </motion.div>
+
+        {/* Pillar Title */}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={`title-${pillar.id}`}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.25 }}
+            className="flex items-center gap-3 mb-8"
+          >
+            <h3 className="text-xl lg:text-2xl font-semibold text-foreground">
+              {pillar.fullName}
+            </h3>
+            {pillar.badge && (
+              <span className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-gold/10 text-gold border border-gold/20">
+                <Star className="w-3 h-3 fill-gold" />
+                {pillar.badge}
+              </span>
+            )}
+          </motion.div>
+        </AnimatePresence>
+
+        {/* Services */}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={`services-${pillar.id}`}
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+            exit={{ opacity: 0 }}
+            className="space-y-3"
+          >
+            {pillar.services.map((svc) => {
+              const isOpen = openServices.has(svc.id);
+              return (
+                <motion.div key={svc.id} variants={itemVariants}>
+                  {/* Accordion Header */}
+                  <button
+                    onClick={() => toggleService(svc.id)}
+                    className="w-full flex items-center justify-between px-6 py-4 rounded-2xl bg-navy-light/60 border border-white/10 hover:border-gold/20 transition-all duration-300 text-left group"
+                  >
+                    <div className="flex items-center gap-3">
+                      <span className="text-xs font-mono text-gold/50 w-7 shrink-0">
+                        {svc.id}
+                      </span>
+                      <span className="text-base font-semibold text-foreground group-hover:text-gold transition-colors">
+                        {svc.name}
+                      </span>
+                    </div>
+                    <ChevronDown
+                      className={`w-5 h-5 text-muted-foreground transition-transform duration-300 shrink-0 ${
+                        isOpen ? "rotate-180" : ""
+                      }`}
+                    />
+                  </button>
+
+                  {/* Tier Cards */}
+                  <AnimatePresence>
+                    {isOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.35, ease: "easeInOut" }}
+                        className="overflow-hidden"
+                      >
+                        <div className="pt-3">
+                          {svc.customQuote ? (
+                            <div className="p-6 lg:p-8 rounded-2xl bg-gradient-to-br from-navy-light to-navy-light/50 border border-gold/20">
+                              <p className="text-muted-foreground leading-relaxed mb-6 max-w-3xl">
+                                {svc.customQuote.copy}
+                              </p>
+                              <a
+                                href="#contact"
+                                className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gold text-navy font-semibold text-sm hover:bg-gold-light transition-colors"
+                              >
+                                {svc.customQuote.cta}
+                              </a>
+                            </div>
+                          ) : (
+                            <div className="grid md:grid-cols-3 gap-4">
+                              {svc.tiers!.map((tier) => {
+                                const s = tierStyle[tier.name];
+                                const isEnterprise = tier.name === "Enterprise";
+                                return (
+                                  <div
+                                    key={tier.name}
+                                    className={`relative p-6 rounded-2xl border transition-all duration-300 hover:scale-[1.015] ${s.border} ${
+                                      isEnterprise
+                                        ? "bg-gradient-to-br from-navy-light to-gold/5"
+                                        : "bg-navy-light"
+                                    }`}
+                                  >
+                                    <div className="flex items-center justify-between mb-4">
+                                      <span
+                                        className={`text-xs font-bold px-2.5 py-1 rounded-full ${s.badge}`}
+                                      >
+                                        {tier.name}
+                                      </span>
+                                      <span className="text-xs text-muted-foreground">
+                                        {tier.delivery}
+                                      </span>
+                                    </div>
+                                    <div className={`text-3xl font-bold mb-6 ${s.price}`}>
+                                      {tier.price}
+                                    </div>
+                                    <ul className="space-y-2.5">
+                                      {tier.deliverables.map((d) => (
+                                        <li key={d} className="flex items-start gap-2.5">
+                                          <Check
+                                            className={`w-4 h-4 mt-0.5 shrink-0 ${s.check}`}
+                                          />
+                                          <span className="text-sm text-foreground/80 leading-relaxed">
+                                            {d}
+                                          </span>
+                                        </li>
+                                      ))}
+                                    </ul>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          )}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </motion.div>
+              );
+            })}
+          </motion.div>
+        </AnimatePresence>
       </div>
     </section>
   );
 }
-

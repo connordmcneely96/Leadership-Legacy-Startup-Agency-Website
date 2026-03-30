@@ -9,6 +9,7 @@ const navLinks = [
   { name: "Dashboard", href: "/dashboard" },
   { name: "Workflow Suite Apps", href: "/suite" },
   { name: "Services", href: "#services" },
+  { name: "Portfolio", href: "#portfolio" },
   { name: "Process", href: "#process" },
   { name: "Pricing", href: "#pricing" },
   { name: "About", href: "#about" },
