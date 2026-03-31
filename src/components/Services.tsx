@@ -1128,6 +1128,12 @@ export default function Services() {
           </motion.div>
         </AnimatePresence>
       </div>
+
+      <div className="relative max-w-7xl mx-auto px-6 lg:px-8 mt-12 text-center">
+        <p className="text-sm text-muted-foreground">
+          All prices reflect current project availability. Contact us for retainer, enterprise, and volume pricing.
+        </p>
+      </div>
     </section>
   );
 }
