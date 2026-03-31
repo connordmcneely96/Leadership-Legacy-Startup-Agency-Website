@@ -14,6 +14,7 @@ type Tier = {
 type ServiceDef = {
   id: string;
   name: string;
+  intro?: string;
   customQuote?: { copy: string; cta: string };
   tiers?: Tier[];
 };
@@ -36,7 +37,9 @@ const PILLARS: PillarDef[] = [
     services: [
       {
         id: "1A",
-        name: "AI Chatbots & Virtual Assistants",
+        name: "AI Chatbots & Conversational Agents",
+        intro:
+          "Stop losing leads to slow response times. A trained AI agent handles inquiries, qualifies prospects, and books calls — 24/7, across every channel.",
         tiers: [
           {
             name: "Starter",
@@ -67,11 +70,11 @@ const PILLARS: PillarDef[] = [
             delivery: "14–21 days",
             deliverables: [
               "Multi-channel deployment",
-              "RAG integration with AI memory",
-              "Full CRM + calendar + ticketing",
-              "Human handoff & real-time analytics",
+              "RAG knowledge base + AI memory",
+              "Full CRM + calendar + ticketing sync",
+              "Human handoff + real-time analytics",
               "Voice option available",
-              "60-day post-launch support",
+              "60-day support",
             ],
           },
         ],
@@ -79,14 +82,15 @@ const PILLARS: PillarDef[] = [
       {
         id: "1B",
         name: "Business Automation & AI Workflows",
+        intro:
+          "Every hour your team spends on manual handoffs is money left on the table. We automate the decisions your software can already make — and add AI where it can't.",
         tiers: [
           {
             name: "Starter",
             price: "$300",
             delivery: "2–5 days",
             deliverables: [
-              "1 automated workflow with 5-step process",
-              "Trigger setup",
+              "1 workflow, 5-step process",
               "1 app integration (n8n / Make / Zapier)",
               "Workflow export + documentation",
             ],
@@ -98,7 +102,7 @@ const PILLARS: PillarDef[] = [
             deliverables: [
               "3 AI-powered workflows",
               "GPT/Claude decision nodes",
-              "3 app integrations with error handling",
+              "3 integrations with error handling",
               "Loom walkthrough video",
               "14-day support",
             ],
@@ -120,7 +124,9 @@ const PILLARS: PillarDef[] = [
       },
       {
         id: "1C",
-        name: "Custom AI Agents",
+        name: "Custom AI Agent Development",
+        intro:
+          "Off-the-shelf AI tools hit a ceiling. Custom agents work your specific data, tools, and workflows — and keep compounding in value as your business grows.",
         tiers: [
           {
             name: "Starter",
@@ -150,9 +156,9 @@ const PILLARS: PillarDef[] = [
             price: "$8,000",
             delivery: "28–45 days",
             deliverables: [
-              "Full multi-agent orchestration system",
-              "Supervisor + specialist agent teams with 10+ tools",
-              "MCP integration + long-term memory (Mem0/Pinecone)",
+              "Full multi-agent system — supervisor + specialist teams",
+              "10+ tools + MCP integration",
+              "Long-term memory (Mem0/Pinecone)",
               "LangSmith monitoring + web dashboard",
               "CI/CD pipeline",
               "60-day support",
@@ -162,7 +168,9 @@ const PILLARS: PillarDef[] = [
       },
       {
         id: "1D",
-        name: "AI-Powered Outbound Sales Systems",
+        name: "AI Sales Infrastructure",
+        intro:
+          "Your best SDR works 9–5. Ours works 24/7, personalizes outreach at scale, and logs every touch to your CRM automatically.",
         tiers: [
           {
             name: "Starter",
@@ -170,7 +178,7 @@ const PILLARS: PillarDef[] = [
             delivery: "5–10 days",
             deliverables: [
               "Apollo sequence setup",
-              "3 email templates",
+              "3 AI-written email templates",
               "Lead enrichment",
               "CRM integration + reporting dashboard",
             ],
@@ -180,10 +188,10 @@ const PILLARS: PillarDef[] = [
             price: "$2,500",
             delivery: "14–21 days",
             deliverables: [
-              "AI SDR agent with ICP lead scoring",
+              "AI SDR agent + Apollo ICP lead scoring",
               "Multi-channel outreach (email + LinkedIn + SMS)",
               "5-touch AI follow-up sequence",
-              "CRM automation + real-time monitoring",
+              "CRM automation + Telegram monitoring",
               "Reply detection",
             ],
           },
@@ -192,7 +200,7 @@ const PILLARS: PillarDef[] = [
             price: "$6,000",
             delivery: "28–45 days",
             deliverables: [
-              "Full AI outbound system",
+              "Full AI outbound system (OpenClaw orchestration)",
               "AI personalization at 100+ leads/day",
               "Lead scoring model + full CRM automation",
               "KPI dashboard",
@@ -204,6 +212,8 @@ const PILLARS: PillarDef[] = [
       {
         id: "1E",
         name: "GoHighLevel + AI Integration",
+        intro:
+          "GHL is powerful. GHL with AI follow-up, booking automation, and a voice agent is a sales machine that runs without your team touching it.",
         tiers: [
           {
             name: "Starter",
@@ -242,102 +252,11 @@ const PILLARS: PillarDef[] = [
           },
         ],
       },
-    ],
-  },
-  {
-    id: 2,
-    shortName: "AI SaaS & Web Apps",
-    fullName: "AI SaaS & Web Application Development",
-    Icon: Rocket,
-    services: [
       {
-        id: "2A",
-        name: "AI SaaS MVP Development",
-        tiers: [
-          {
-            name: "Starter",
-            price: "$2,500",
-            delivery: "14–21 days",
-            deliverables: [
-              "MVP with 1 core AI feature",
-              "React + Node/Python backend",
-              "1 LLM integration + basic auth",
-              "Cloudflare Pages deployment",
-              "GitHub repo",
-            ],
-          },
-          {
-            name: "Professional",
-            price: "$8,000",
-            delivery: "28–42 days",
-            deliverables: [
-              "Full MVP with 3–5 AI features",
-              "Next.js + D1 database + REST API",
-              "Multi-LLM + full auth + Stripe billing",
-              "Admin dashboard + mobile responsive",
-              "CI/CD pipeline + 30-day warranty",
-            ],
-          },
-          {
-            name: "Enterprise",
-            price: "$20,000",
-            delivery: "60–90 days",
-            deliverables: [
-              "Production-grade SaaS platform",
-              "Multi-tenant architecture",
-              "Full AI suite (agents + RAG + automation)",
-              "Analytics dashboards + white-label ready",
-              "Load testing + 60-day support",
-            ],
-          },
-        ],
-      },
-      {
-        id: "2B",
-        name: "RAG Knowledge Base Systems",
-        tiers: [
-          {
-            name: "Starter",
-            price: "$800",
-            delivery: "7–14 days",
-            deliverables: [
-              "Vector DB setup (Chroma/FAISS)",
-              "1 document type, up to 500 pages ingested",
-              "Basic chunking",
-              "Simple query API",
-              "Accuracy testing report",
-            ],
-          },
-          {
-            name: "Professional",
-            price: "$2,500",
-            delivery: "21–30 days",
-            deliverables: [
-              "Pinecone/Qdrant vector DB",
-              "3 document types + web scraping",
-              "Advanced chunking + hybrid search",
-              "React/Streamlit chat UI with source citation",
-              "Re-ranking pipeline + 30-day support",
-            ],
-          },
-          {
-            name: "Enterprise",
-            price: "$6,000",
-            delivery: "45–60 days",
-            deliverables: [
-              "Full production RAG application",
-              "Unlimited sources + document types",
-              "Auto-sync ingestion pipeline",
-              "Multi-tenant access with RBAC",
-              "Full chat UI + analytics",
-              "Cloudflare edge deployment + 60-day support",
-            ],
-          },
-        ],
-      },
-      {
-        id: "2C",
-        name: "AI Voice Agent Systems",
+        id: "1F",
+        name: "Voice AI & Phone Agent Systems",
+        intro:
+          "Missed calls cost you revenue. An AI phone agent answers every call, books appointments, and routes complex issues — in a natural voice indistinguishable from your brand.",
         tiers: [
           {
             name: "Starter",
@@ -380,8 +299,53 @@ const PILLARS: PillarDef[] = [
         ],
       },
       {
-        id: "2D",
+        id: "1G",
+        name: "AI Integration & API Services",
+        intro:
+          "Your existing software stack has AI-shaped holes. We fill them with production-grade LLM integrations built to handle real traffic, real data, and real costs.",
+        tiers: [
+          {
+            name: "Starter",
+            price: "$400",
+            delivery: "3–7 days",
+            deliverables: [
+              "1 LLM API integration (OpenAI/Claude)",
+              "Basic prompt-to-response flow",
+              "REST API wrapper + error handling",
+              "Documentation",
+            ],
+          },
+          {
+            name: "Professional",
+            price: "$1,500",
+            delivery: "7–14 days",
+            deliverables: [
+              "3 AI integrations",
+              "Streaming responses",
+              "Token cost optimization + rate limiting + caching",
+              "Basic UI + database logging",
+              "30-day support",
+            ],
+          },
+          {
+            name: "Enterprise",
+            price: "$4,000",
+            delivery: "14–28 days",
+            deliverables: [
+              "Full AI layer across entire application",
+              "Multi-model fallback",
+              "Cloudflare AI Gateway + semantic caching",
+              "Usage analytics + token budgeting per user",
+              "60-day support",
+            ],
+          },
+        ],
+      },
+      {
+        id: "1H",
         name: "Cloudflare Edge AI Infrastructure",
+        intro:
+          "AWS at scale costs a fortune. We build your AI stack on Cloudflare's global edge — 60–80% lower infrastructure cost, zero cold starts, enterprise-grade reliability.",
         tiers: [
           {
             name: "Starter",
@@ -399,9 +363,8 @@ const PILLARS: PillarDef[] = [
             price: "$3,000",
             delivery: "14–28 days",
             deliverables: [
-              "CF AI Gateway setup",
-              "Multi-model routing + semantic caching",
-              "Rate limiting",
+              "CF AI Gateway + multi-model routing",
+              "Semantic caching + rate limiting",
               "Full D1 + R2 + KV stack",
               "Analytics dashboard + Cloudflare Pages frontend",
               "30-day support",
@@ -418,6 +381,146 @@ const PILLARS: PillarDef[] = [
               "Durable Objects for stateful agents",
               "AI Gateway observability + zero cold-start design",
               "CI/CD + cost optimization audit + 60-day support",
+            ],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 2,
+    shortName: "AI SaaS & Web Apps",
+    fullName: "AI SaaS & Web Application Development",
+    Icon: Rocket,
+    services: [
+      {
+        id: "2A",
+        name: "Full-Stack AI SaaS MVP Development",
+        intro:
+          "Turn your AI product idea into a live, revenue-ready SaaS. We handle the full stack — frontend, backend, AI integrations, billing, and deployment.",
+        tiers: [
+          {
+            name: "Starter",
+            price: "$2,500",
+            delivery: "14–21 days",
+            deliverables: [
+              "MVP with 1 core AI feature",
+              "React + Node/Python backend",
+              "1 LLM integration + basic auth",
+              "Cloudflare Pages deployment",
+              "GitHub repo",
+            ],
+          },
+          {
+            name: "Professional",
+            price: "$8,000",
+            delivery: "28–42 days",
+            deliverables: [
+              "Full MVP with 3–5 AI features",
+              "Next.js + D1 database + REST API",
+              "Multi-LLM + full auth + Stripe billing",
+              "Admin dashboard + mobile responsive",
+              "CI/CD pipeline + 30-day warranty",
+            ],
+          },
+          {
+            name: "Enterprise",
+            price: "$20,000",
+            delivery: "60–90 days",
+            deliverables: [
+              "Production-grade SaaS platform",
+              "Multi-tenant architecture",
+              "Full AI suite (agents + RAG + automation)",
+              "Analytics dashboards + white-label ready",
+              "Load testing + 60-day support",
+            ],
+          },
+        ],
+      },
+      {
+        id: "2B",
+        name: "RAG Knowledge Base Systems",
+        intro:
+          "Your documents, policies, and institutional knowledge — turned into an AI that answers questions instantly, cites its sources, and never loses context.",
+        tiers: [
+          {
+            name: "Starter",
+            price: "$800",
+            delivery: "7–14 days",
+            deliverables: [
+              "Vector DB setup (Chroma/FAISS)",
+              "1 document type, up to 500 pages ingested",
+              "Basic chunking",
+              "Simple query API",
+              "Accuracy testing report",
+            ],
+          },
+          {
+            name: "Professional",
+            price: "$2,500",
+            delivery: "21–30 days",
+            deliverables: [
+              "Pinecone/Qdrant vector DB",
+              "3 document types + web scraping",
+              "Advanced chunking + hybrid search",
+              "React/Streamlit chat UI with source citation",
+              "Re-ranking pipeline + 30-day support",
+            ],
+          },
+          {
+            name: "Enterprise",
+            price: "$6,000",
+            delivery: "45–60 days",
+            deliverables: [
+              "Full production RAG application",
+              "Unlimited sources + document types",
+              "Auto-sync ingestion pipeline",
+              "Multi-tenant access with RBAC",
+              "Full chat UI + analytics",
+              "Cloudflare edge deployment + 60-day support",
+            ],
+          },
+        ],
+      },
+      {
+        id: "2C",
+        name: "AI-Powered Lead Gen Websites",
+        intro:
+          "A website that captures leads and routes them into your CRM automatically. Built fast, optimized to convert, and ready to scale.",
+        tiers: [
+          {
+            name: "Starter",
+            price: "$500",
+            delivery: "5–7 days",
+            deliverables: [
+              "3-page site (Home / About / Contact)",
+              "Contact form + mobile responsive",
+              "Basic SEO",
+              "Cloudflare hosting setup",
+            ],
+          },
+          {
+            name: "Professional",
+            price: "$1,500",
+            delivery: "10–14 days",
+            deliverables: [
+              "6-page website",
+              "Lead capture funnel",
+              "Google Maps + full SEO setup",
+              "GA4 analytics + domain/DNS configuration",
+              "Unlimited revisions",
+            ],
+          },
+          {
+            name: "Enterprise",
+            price: "$3,000",
+            delivery: "18–25 days",
+            deliverables: [
+              "8+ pages",
+              "CRM integration + blog setup",
+              "AI chatbot integration",
+              "Advanced SEO + performance optimization",
+              "30-day support",
             ],
           },
         ],
@@ -954,7 +1057,7 @@ export default function Services() {
             What We Build
           </h2>
           <p className="mt-6 text-lg text-muted-foreground">
-            Five pillars. Every deliverable, price, and timeline — laid out with no ambiguity.
+            Five pillars. Every deliverable, price, and timeline — no ambiguity, no surprises.
           </p>
         </motion.div>
 
@@ -1062,6 +1165,11 @@ export default function Services() {
                         className="overflow-hidden"
                       >
                         <div className="pt-3">
+                          {svc.intro && (
+                            <p className="px-6 pb-4 text-sm text-muted-foreground leading-relaxed">
+                              {svc.intro}
+                            </p>
+                          )}
                           {svc.customQuote ? (
                             <div className="p-6 lg:p-8 rounded-2xl bg-gradient-to-br from-navy-light to-navy-light/50 border border-gold/20">
                               <p className="text-muted-foreground leading-relaxed mb-6 max-w-3xl">
