@@ -8,28 +8,28 @@ const floatingCards = [
   {
     icon: Bot,
     title: "AI Agents & SaaS",
-    subtitle: "Automation & Development",
+    subtitle: "LangGraph · Claude API · RAG",
     position: "top-8 right-8",
     delay: 0.8,
   },
   {
     icon: Dumbbell,
     title: "Fitness AI Platforms",
-    subtitle: "Category Exclusive",
+    subtitle: "$10K–$80K · Category Exclusive",
     position: "top-32 right-48",
     delay: 1.0,
   },
   {
     icon: Wrench,
-    title: "CAD Engineering",
-    subtitle: "AI Product Videos",
+    title: "CAD + AI Video",
+    subtitle: "SolidWorks → Demo in 2 Weeks",
     position: "bottom-32 right-16",
     delay: 1.2,
   },
   {
     icon: Palette,
     title: "Brand & Creative",
-    subtitle: "Identity & Design",
+    subtitle: "Identity · Motion · AI Video",
     position: "bottom-8 right-56",
     delay: 1.4,
   },
@@ -42,13 +42,13 @@ export default function Hero() {
       <div className="absolute inset-0 bg-gradient-to-br from-navy via-navy to-navy-dark" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-gold/10 via-transparent to-transparent" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,_var(--tw-gradient-stops))] from-blue/5 via-transparent to-transparent" />
-      
+
       {/* Grid Pattern */}
-      <div 
+      <div
         className="absolute inset-0 opacity-[0.03]"
         style={{
           backgroundImage: `linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)`,
-          backgroundSize: '60px 60px',
+          backgroundSize: "60px 60px",
         }}
       />
 
@@ -64,7 +64,7 @@ export default function Hero() {
             >
               <span className="w-2 h-2 rounded-full bg-gold animate-pulse" />
               <span className="text-sm text-muted-foreground">
-                AI-First Digital Agency
+                Fortune 500 Engineering · Live AI Systems
               </span>
             </motion.div>
 
@@ -74,8 +74,9 @@ export default function Hero() {
               transition={{ duration: 0.6, delay: 0.1 }}
               className="text-4xl sm:text-5xl lg:text-6xl font-serif font-semibold leading-[1.1] tracking-tight"
             >
-              AI-First Digital Solutions That Build Your{" "}
-              <span className="gradient-text">Competitive Legacy</span>
+              AI That Ships.{" "}
+              Engineering That Holds.{" "}
+              <span className="gradient-text">Design That Converts.</span>
             </motion.h1>
 
             <motion.p
@@ -84,8 +85,10 @@ export default function Hero() {
               transition={{ duration: 0.6, delay: 0.2 }}
               className="text-lg lg:text-xl text-muted-foreground max-w-xl leading-relaxed"
             >
-              We build intelligent systems, AI agents, and AI-powered web applications 
-              that turn innovation into measurable business outcomes—not just prototypes.
+              5+ years API 610/682 mechanical engineering for Tesla, Pfizer &
+              John Deere. Full-stack AI on Cloudflare&apos;s edge — LangGraph,
+              Claude API, RAG, multi-agent systems. One agency that builds what
+              others can&apos;t.
             </motion.p>
 
             <motion.div
@@ -114,19 +117,19 @@ export default function Hero() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.6, delay: 0.5 }}
-              className="pt-8 flex items-center gap-8 text-sm text-muted-foreground"
+              className="pt-8 flex flex-wrap items-center gap-6 text-sm text-muted-foreground"
             >
               <div className="flex items-center gap-2">
                 <div className="w-1 h-1 rounded-full bg-gold" />
-                <span>Production-Grade AI</span>
+                <span>OpenClaw · Live Multi-Agent AI</span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-1 h-1 rounded-full bg-gold" />
-                <span>Enterprise-Ready</span>
+                <span>Cloudflare Edge AI</span>
               </div>
-              <div className="flex items-center gap-2 hidden sm:flex">
+              <div className="flex items-center gap-2">
                 <div className="w-1 h-1 rounded-full bg-gold" />
-                <span>Outcome-Focused</span>
+                <span>API 610/682 Certified</span>
               </div>
             </motion.div>
           </div>
@@ -151,9 +154,7 @@ export default function Hero() {
                 className={`absolute ${card.position}`}
               >
                 <motion.div
-                  animate={{
-                    y: [0, -10, 0],
-                  }}
+                  animate={{ y: [0, -10, 0] }}
                   transition={{
                     duration: 4,
                     repeat: Infinity,
@@ -167,8 +168,12 @@ export default function Hero() {
                       <card.icon className="w-6 h-6 text-gold" />
                     </div>
                     <div>
-                      <h3 className="font-medium text-foreground">{card.title}</h3>
-                      <p className="text-sm text-muted-foreground">{card.subtitle}</p>
+                      <h3 className="font-medium text-foreground">
+                        {card.title}
+                      </h3>
+                      <p className="text-sm text-muted-foreground">
+                        {card.subtitle}
+                      </p>
                     </div>
                   </div>
                 </motion.div>
@@ -182,7 +187,7 @@ export default function Hero() {
                 animate={{ pathLength: 1 }}
                 transition={{ duration: 2, delay: 1.5 }}
                 d="M 200 100 Q 250 200 180 300"
-                stroke="url(#gradient)"
+                stroke="url(#heroGradient)"
                 strokeWidth="1"
                 fill="none"
               />
@@ -191,12 +196,18 @@ export default function Hero() {
                 animate={{ pathLength: 1 }}
                 transition={{ duration: 2, delay: 1.7 }}
                 d="M 300 150 Q 250 250 320 350"
-                stroke="url(#gradient)"
+                stroke="url(#heroGradient)"
                 strokeWidth="1"
                 fill="none"
               />
               <defs>
-                <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <linearGradient
+                  id="heroGradient"
+                  x1="0%"
+                  y1="0%"
+                  x2="100%"
+                  y2="100%"
+                >
                   <stop offset="0%" stopColor="#C9A227" />
                   <stop offset="100%" stopColor="#3498DB" />
                 </linearGradient>
@@ -224,4 +235,3 @@ export default function Hero() {
     </section>
   );
 }
-
