@@ -1,58 +1,82 @@
 "use client";
 
 import { motion } from "framer-motion";
-import {
-  Target,
-  Lightbulb,
-  Handshake,
-  Shield,
-  TrendingUp,
-  Cpu,
-  Palette,
-} from "lucide-react";
-
-const values = [
-  {
-    icon: Target,
-    name: "Excellence",
-    description: "Production-grade solutions, not prototypes. We ship work that is ready for real business operations.",
-  },
-  {
-    icon: Lightbulb,
-    name: "Innovation",
-    description: "Staying at the cutting edge of AI so you don't have to. We bring the latest capabilities to your business.",
-  },
-  {
-    icon: Handshake,
-    name: "Partnership",
-    description: "Your success is our success metric. We measure our work by the outcomes you achieve.",
-  },
-  {
-    icon: Shield,
-    name: "Integrity",
-    description: "Honest communication and realistic delivery. We tell you what's possible—and what isn't.",
-  },
-  {
-    icon: TrendingUp,
-    name: "Impact",
-    description: "Measurable business outcomes over technical novelty. Every solution is tied to real ROI.",
-  },
-];
+import { Cpu, Palette } from "lucide-react";
 
 const founders = [
   {
     name: "Connor McNeely",
-    role: "Co-Founder — AI Development & Engineering",
+    role: "Technical Lead — AI Development & Engineering",
     icon: Cpu,
-    bio: "Mechanical engineer, AI developer, and 15-year elite competitive bodybuilder. Connor leads all technical delivery across AI systems, SaaS platforms, CAD engineering, and the agency's proprietary AI fitness and body composition platforms — service categories where Leadership Legacy has no direct competition.",
-    tags: ["AI Development", "CAD Engineering", "SaaS Architecture", "Fitness AI"],
+    bio: "5+ years mechanical engineering delivering API 610/682 rotating equipment projects for Tesla, Pfizer, and John Deere. Full-stack AI developer — LangGraph, Claude API, Cloudflare Workers/D1/R2/KV, React/Next.js, RAG, and multi-agent systems. Creator of OpenClaw, a live multi-agent AI outbound system. Competitive natural bodybuilder — the engineer who can also build your AI fitness platform from the inside.",
+    tags: [
+      "LangGraph",
+      "Claude API",
+      "Cloudflare Edge",
+      "RAG",
+      "OpenClaw Creator",
+      "API 610/682",
+    ],
   },
   {
     name: "Fred Williams",
-    role: "Co-Founder — Brand & Creative Direction",
+    role: "Creative Lead — Brand & Design Direction",
     icon: Palette,
-    bio: "Brand designer with a sharp eye for identity systems that convert. Fred leads all creative output — brand identities, website design, video production, and the visual language that makes Leadership Legacy's client work impossible to ignore.",
-    tags: ["Brand Identity", "Website Design", "Video Production", "Creative Strategy"],
+    bio: "Brand identity, logo design, UI/UX, motion graphics, and AI video production. Portfolio includes New Iberia Church of Christ, Southern Pets Animal Rescue, and the Leadership Legacy brand system. Fred turns technical capability into visual credibility — the design layer that makes a great AI system trustworthy to the people who need to use it.",
+    tags: [
+      "Brand Identity",
+      "Logo Design",
+      "UI/UX",
+      "Motion Graphics",
+      "AI Video",
+    ],
+  },
+];
+
+const unfairAdvantages = [
+  {
+    number: "01",
+    title: "Fitness + AI",
+    headline:
+      "The only team combining competitive natural bodybuilding with AI SaaS development.",
+    body: "AI Fitness Coaching Platforms command $10K–$80K. We build them from the inside — not as consultants guessing at the domain, but as practitioners who live it. No one else can do this.",
+  },
+  {
+    number: "02",
+    title: "CAD + AI Video",
+    headline:
+      "A 5+-year mechanical engineer who also produces AI video.",
+    body: "We take your SolidWorks files and deliver professional narrated product demos in 2 weeks. This combination does not exist anywhere else — not on any platform.",
+  },
+  {
+    number: "03",
+    title: "Cloudflare + AI",
+    headline:
+      "We build AI applications on Cloudflare's edge infrastructure.",
+    body: "60–80% lower infrastructure cost than AWS at scale. Enterprise AI performance at startup prices. Your competitors are overpaying. You don't have to.",
+  },
+];
+
+const liveWork = [
+  {
+    name: "MechAssist AI",
+    category: "RAG System · Mechanical Engineering",
+    tag: "AI Dev",
+  },
+  {
+    name: "AI Meal Planner",
+    category: "SaaS · Stripe · Cloudflare",
+    tag: "AI SaaS",
+  },
+  {
+    name: "Evergrow Landscaping",
+    category: "Lead Gen · CRM · Apollo Automation",
+    tag: "Automation",
+  },
+  {
+    name: "New Iberia Church of Christ",
+    category: "Full Brand · Website",
+    tag: "Creative",
   },
 ];
 
@@ -80,7 +104,8 @@ export default function About() {
               Built by Operators, Not Generalists
             </h2>
             <p className="mt-4 text-muted-foreground">
-              Two founders with rare, non-overlapping skill sets — combined under one agency roof.
+              Two founders with rare, non-overlapping skill sets — combined
+              under one agency roof.
             </p>
           </div>
 
@@ -126,7 +151,57 @@ export default function About() {
           </div>
         </motion.div>
 
-        {/* Mission + Values */}
+        {/* Unfair Advantages */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="mb-24"
+        >
+          <div className="text-center max-w-2xl mx-auto mb-12">
+            <span className="text-sm font-medium text-gold uppercase tracking-wider">
+              Why We Win
+            </span>
+            <h2 className="mt-4 text-3xl lg:text-4xl font-serif font-semibold">
+              Three Unfair Advantages
+            </h2>
+            <p className="mt-4 text-muted-foreground">
+              Combinations that don&apos;t exist at any other agency — on any platform.
+            </p>
+          </div>
+
+          <div className="grid lg:grid-cols-3 gap-6">
+            {unfairAdvantages.map((adv, index) => (
+              <motion.div
+                key={adv.number}
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: index * 0.12 }}
+                className="relative p-8 rounded-3xl bg-navy-light/40 border border-white/5 hover:border-gold/20 transition-all duration-300 group"
+              >
+                <div className="absolute top-0 left-8 w-px h-8 bg-gradient-to-b from-gold to-transparent" />
+                <span className="text-4xl font-serif font-semibold text-gold/20 select-none">
+                  {adv.number}
+                </span>
+                <div className="mt-3 mb-3">
+                  <span className="text-xs font-medium text-gold uppercase tracking-wider">
+                    {adv.title}
+                  </span>
+                </div>
+                <h3 className="text-lg font-semibold text-foreground leading-snug mb-3">
+                  {adv.headline}
+                </h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  {adv.body}
+                </p>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* Mission + Live Work */}
         <div className="grid lg:grid-cols-2 gap-16 items-start">
           {/* Left - Story */}
           <motion.div
@@ -144,64 +219,84 @@ export default function About() {
 
             <div className="space-y-6 text-muted-foreground leading-relaxed">
               <p>
-                The AI revolution is transforming how businesses operate. But while
-                enterprises have armies of engineers building custom AI solutions,
-                most organizations are being left behind — stuck with generic tools
-                that don&apos;t fit their unique needs.
+                Most agencies hand you deliverables. We hand you systems that
+                compound. Every engagement is architected to keep earning —
+                through automation, better data, and infrastructure that scales
+                without proportional cost.
               </p>
               <p>
-                <span className="text-foreground font-medium">Leadership Legacy Digital</span> was
-                founded to change that. We combine deep technical AI development with
-                precision brand design to deliver complete, production-ready systems —
-                from AI agents and SaaS platforms to CAD engineering, fitness AI, and
-                full brand identities.
+                <span className="text-foreground font-medium">
+                  Leadership Legacy Digital
+                </span>{" "}
+                exists because the agencies that could build serious AI systems
+                couldn&apos;t design, and the design shops couldn&apos;t
+                engineer. We closed that gap.
               </p>
               <p>
-                Our name reflects our mission:{" "}
-                <span className="text-gold">Leadership</span> in helping you adopt AI
-                strategically, and <span className="text-gold">Legacy</span> in building
-                durable systems that compound in value over time.
+                Our name is intentional:{" "}
+                <span className="text-gold">Leadership</span> in helping you
+                adopt AI strategically, and{" "}
+                <span className="text-gold">Legacy</span> in building durable
+                systems that compound in value over time.
               </p>
             </div>
 
             <div className="mt-8 p-6 rounded-xl bg-navy/50 border border-gold/20">
-              <p className="text-sm text-gold font-medium mb-2">Our Mission</p>
+              <p className="text-sm text-gold font-medium mb-2">Our Standard</p>
               <p className="text-foreground">
-                Empower businesses to harness AI and modern technology to automate
-                workflows, unlock insights from data, and build durable competitive advantages.
+                Production-grade or it doesn&apos;t ship. Every system is built
+                to run in the real world — not to demo well in a slide deck.
               </p>
             </div>
           </motion.div>
 
-          {/* Right - Values */}
+          {/* Right - Live Work */}
           <motion.div
             initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
-            <h3 className="text-xl font-semibold text-foreground mb-8">
-              What Guides Us
+            <h3 className="text-xl font-semibold text-foreground mb-2">
+              Live Work
             </h3>
+            <p className="text-sm text-muted-foreground mb-8">
+              Systems we&apos;ve shipped — not mockups.
+            </p>
             <div className="space-y-4">
-              {values.map((value, index) => (
+              {liveWork.map((project, index) => (
                 <motion.div
-                  key={value.name}
-                  initial={{ opacity: 0, y: 20 }}
+                  key={project.name}
+                  initial={{ opacity: 0, y: 16 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  transition={{ duration: 0.4, delay: 0.3 + index * 0.1 }}
-                  className="flex gap-4 p-5 rounded-xl bg-navy-light/30 border border-white/5 hover:border-gold/10 transition-colors group"
+                  transition={{ duration: 0.4, delay: 0.3 + index * 0.08 }}
+                  className="flex items-center justify-between gap-4 p-5 rounded-xl bg-navy-light/30 border border-white/5 hover:border-gold/10 transition-colors group"
                 >
-                  <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-gold/20 to-gold/5 flex items-center justify-center shrink-0 group-hover:from-gold/30 group-hover:to-gold/10 transition-colors">
-                    <value.icon className="w-5 h-5 text-gold" />
-                  </div>
                   <div>
-                    <h4 className="font-medium text-foreground mb-1">{value.name}</h4>
-                    <p className="text-sm text-muted-foreground">{value.description}</p>
+                    <p className="font-medium text-foreground group-hover:text-gold transition-colors">
+                      {project.name}
+                    </p>
+                    <p className="text-sm text-muted-foreground mt-0.5">
+                      {project.category}
+                    </p>
                   </div>
+                  <span className="shrink-0 text-xs px-3 py-1 rounded-full bg-gold/5 border border-gold/15 text-gold/80">
+                    {project.tag}
+                  </span>
                 </motion.div>
               ))}
+            </div>
+
+            <div className="mt-6">
+              <a
+                href="https://leadershiplegacydigital.my.canva.site/main-leadership-legacy-portfolio"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm text-gold hover:text-gold-light transition-colors underline underline-offset-4"
+              >
+                View full portfolio →
+              </a>
             </div>
           </motion.div>
         </div>
