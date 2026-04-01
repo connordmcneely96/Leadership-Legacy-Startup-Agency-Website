@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence, type Variants } from "framer-motion";
-import { Bot, Rocket, Dumbbell, Wrench, Palette, ChevronDown, Check, Star } from "lucide-react";
+import { Bot, Rocket, Dumbbell, Wrench, Palette, Brain, ChevronDown, Check, Star } from "lucide-react";
 
 type Tier = {
   name: "Starter" | "Professional" | "Enterprise";
@@ -949,13 +949,292 @@ const PILLARS: PillarDef[] = [
   },
   {
     id: 5,
+    shortName: "ML & Industrial AI",
+    fullName: "ML, Data Science & Industrial AI",
+    Icon: Brain,
+    badge: "Category Exclusive",
+    intro:
+      "Predictive maintenance, quality control inspection, and industrial ML are niches no pure data scientist can credibly claim. API 610/682 credentials + 15 years of industrial equipment experience means we understand failure modes — not just the pixels.",
+    services: [
+      {
+        id: "5A",
+        name: "Machine Learning & Predictive Analytics",
+        intro:
+          "From raw data to a deployed model with a monitored API. Notable vertical: predictive maintenance for rotating equipment (pumps, compressors, motors) — $3,000–$12,000 per engagement, near-zero competition.",
+        tiers: [
+          {
+            name: "Starter",
+            price: "$500",
+            delivery: "5–10 days",
+            deliverables: [
+              "EDA + 1 ML model (classification or regression)",
+              "Python / scikit-learn",
+              "Performance report",
+              "Jupyter notebook",
+            ],
+          },
+          {
+            name: "Professional",
+            price: "$2,000",
+            delivery: "14–21 days",
+            deliverables: [
+              "Full ML pipeline — data to model to API",
+              "Model selection + tuning",
+              "FastAPI endpoint",
+              "Model monitoring",
+              "Streamlit/React dashboard",
+              "30-day support",
+            ],
+          },
+          {
+            name: "Enterprise",
+            price: "$6,000",
+            delivery: "30–60 days",
+            deliverables: [
+              "Production ML system",
+              "Deep learning (PyTorch / TensorFlow)",
+              "Automated retraining pipeline",
+              "A/B model testing",
+              "MLflow / W&B tracking",
+              "Full analytics dashboard",
+              "60-day support",
+            ],
+          },
+        ],
+      },
+      {
+        id: "5B",
+        name: "LLM Fine-Tuning & Prompt Engineering",
+        intro:
+          "A well-engineered prompt outperforms a poorly fine-tuned model every time. We do both — starting with what actually moves the needle for your use case.",
+        tiers: [
+          {
+            name: "Starter",
+            price: "$300",
+            delivery: "3–7 days",
+            deliverables: [
+              "Custom system prompt engineering",
+              "10 prompt variations for 1 use case",
+              "Prompt testing + evaluation",
+              "Prompt library PDF",
+            ],
+          },
+          {
+            name: "Professional",
+            price: "$1,500",
+            delivery: "10–21 days",
+            deliverables: [
+              "OpenAI fine-tune job",
+              "Training dataset — 500 examples",
+              "Fine-tuned model deployment",
+              "Accuracy benchmark before/after",
+              "API integration guide",
+              "3 iterations + 30-day support",
+            ],
+          },
+          {
+            name: "Enterprise",
+            price: "$4,000",
+            delivery: "21–45 days",
+            deliverables: [
+              "LoRA/QLoRA fine-tune (Llama 3 / Mistral)",
+              "Custom training dataset — 1,000+ examples",
+              "RLHF/DPO alignment",
+              "Model evaluation suite",
+              "Quantized deployment + inference API",
+              "Full training report",
+              "60-day support",
+            ],
+          },
+        ],
+      },
+      {
+        id: "5C",
+        name: "Computer Vision & Industrial QC",
+        intro:
+          "Defect detection, object classification, and real-time inspection pipelines — built by someone who understands what a failure mode looks like in the real world.",
+        tiers: [
+          {
+            name: "Starter",
+            price: "$600",
+            delivery: "7–14 days",
+            deliverables: [
+              "Pre-trained model (YOLO / ResNet)",
+              "1 detection or classification use case",
+              "Python OpenCV pipeline",
+              "Accuracy report",
+              "Jupyter + API endpoint",
+            ],
+          },
+          {
+            name: "Professional",
+            price: "$2,500",
+            delivery: "21–35 days",
+            deliverables: [
+              "Custom dataset training (YOLOv8)",
+              "Data labeling guidance",
+              "Full inference pipeline with real-time processing",
+              "REST API endpoint",
+              "Streamlit/React dashboard",
+              "30-day support",
+            ],
+          },
+          {
+            name: "Enterprise",
+            price: "$6,000",
+            delivery: "45–75 days",
+            deliverables: [
+              "Full production CV system",
+              "Custom model architecture",
+              "Edge deployment (Jetson / Raspberry Pi)",
+              "Real-time monitoring + model retraining pipeline",
+              "Production line integration",
+              "Full documentation + 60-day support",
+            ],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: 6,
     shortName: "Creative & Brand Design",
     fullName: "Creative & Brand Design",
     Icon: Palette,
     services: [
       {
-        id: "5A",
-        name: "AI-Assisted Video Production",
+        id: "6A",
+        name: "Logo Design",
+        intro:
+          "A logo that works at 16px and on a billboard. Vector-native, brand-system ready.",
+        tiers: [
+          {
+            name: "Starter",
+            price: "$120",
+            delivery: "2–3 days",
+            deliverables: [
+              "1 logo concept",
+              "PNG + SVG",
+              "Transparent background + B&W version",
+              "2 revisions",
+            ],
+          },
+          {
+            name: "Professional",
+            price: "$300",
+            delivery: "3–4 days",
+            deliverables: [
+              "3 logo concepts",
+              "All vector files (AI / EPS / SVG)",
+              "Social media kit",
+              "3D mockup",
+              "Unlimited revisions",
+            ],
+          },
+          {
+            name: "Enterprise",
+            price: "$800",
+            delivery: "4–6 days",
+            deliverables: [
+              "5 concepts",
+              "Full file package",
+              "Color palette + typography system",
+              "Brand guidelines PDF",
+              "Business card + social templates",
+            ],
+          },
+        ],
+      },
+      {
+        id: "6B",
+        name: "Full Brand Identity System",
+        intro:
+          "Everything a brand needs to look credible from day one — system-built, not cobbled together.",
+        tiers: [
+          {
+            name: "Starter",
+            price: "$800",
+            delivery: "5–7 days",
+            deliverables: [
+              "Logo (primary + variations)",
+              "Color palette + typography",
+              "Brand style guide PDF (10–15 pages)",
+              "Business card",
+            ],
+          },
+          {
+            name: "Professional",
+            price: "$1,500",
+            delivery: "7–10 days",
+            deliverables: [
+              "All Starter deliverables",
+              "Email signature + letterhead",
+              "Social media templates (5 formats)",
+              "Secondary brand elements",
+              "Brand voice guide",
+            ],
+          },
+          {
+            name: "Enterprise",
+            price: "$3,000",
+            delivery: "10–14 days",
+            deliverables: [
+              "Complete brand system",
+              "Pattern/texture library + photography style guide",
+              "Custom icon set",
+              "Brand application mockups (10+)",
+              "Full source files",
+            ],
+          },
+        ],
+      },
+      {
+        id: "6C",
+        name: "Social Media Content Packs",
+        intro:
+          "On-brand, ready-to-post content built in bulk. Monthly retainer option available ($500–$1,200/month).",
+        tiers: [
+          {
+            name: "Starter",
+            price: "$100",
+            delivery: "2–3 days",
+            deliverables: [
+              "5 custom branded posts",
+              "3 story templates",
+              "PNG delivery",
+              "2 revisions",
+            ],
+          },
+          {
+            name: "Professional",
+            price: "$350",
+            delivery: "3–4 days",
+            deliverables: [
+              "12 posts + 8 stories + 2 reel covers",
+              "Editable Canva files",
+              "All platforms",
+              "Content calendar",
+              "Unlimited revisions",
+            ],
+          },
+          {
+            name: "Enterprise",
+            price: "$750",
+            delivery: "4–6 days",
+            deliverables: [
+              "20 posts + 12 stories + 4 reel covers",
+              "12 highlight icons",
+              "Source files + caption copy",
+              "Full content calendar",
+            ],
+          },
+        ],
+      },
+      {
+        id: "6D",
+        name: "AI Video Production",
+        intro:
+          "Scroll-stopping video content built with InVideo AI and ElevenLabs — scripted, voiced, branded, and delivered fast.",
         tiers: [
           {
             name: "Starter",
@@ -973,9 +1252,9 @@ const PILLARS: PillarDef[] = [
             price: "$800",
             delivery: "5–7 days",
             deliverables: [
-              "3 × 30–60 second videos",
+              "3 × 30–60 sec videos",
               "AI scriptwriting + AI voiceover + music",
-              "Captions/SRT files + 3 custom thumbnails",
+              "Captions/SRT + 3 custom thumbnails",
               "All platform cuts (16:9 / 9:16 / 1:1)",
               "3 revisions + 14-day support",
             ],
@@ -996,8 +1275,10 @@ const PILLARS: PillarDef[] = [
         ],
       },
       {
-        id: "5B",
+        id: "6E",
         name: "Faceless YouTube Channel Setup & Automation",
+        intro:
+          "A complete, monetization-ready YouTube channel — built, loaded with content, and wired to auto-post.",
         tiers: [
           {
             name: "Starter",
@@ -1028,8 +1309,8 @@ const PILLARS: PillarDef[] = [
             price: "$2,500",
             delivery: "14–21 days",
             deliverables: [
-              "Full YouTube automation channel",
-              "12 scripted + AI-voiced + edited videos",
+              "Full YouTube automation channel (scripted + voiced + edited + scheduled)",
+              "12 videos",
               "Monetization path guide",
               "n8n auto-posting pipeline",
               "Analytics dashboard + 30-day support",
@@ -1038,18 +1319,21 @@ const PILLARS: PillarDef[] = [
         ],
       },
       {
-        id: "5C",
-        name: "Brand Identity",
+        id: "6F",
+        name: "UI/UX Design (Figma)",
+        intro:
+          "Dev-ready Figma files — not wireframe sketches. When Connor builds it, Fred designs it.",
         tiers: [
           {
             name: "Starter",
-            price: "$800",
+            price: "$600",
             delivery: "4–6 days",
             deliverables: [
-              "Logo (primary + variations)",
-              "Color palette + typography",
-              "Brand style guide PDF (10–15 pages)",
-              "Business card design",
+              "Desktop + mobile frames",
+              "3 core pages",
+              "Figma editable file",
+              "Interactive prototype",
+              "Component library basics",
             ],
           },
           {
@@ -1057,11 +1341,11 @@ const PILLARS: PillarDef[] = [
             price: "$1,500",
             delivery: "7–10 days",
             deliverables: [
-              "All Starter deliverables",
-              "Email signature + letterhead",
-              "Social media templates (5 formats)",
-              "Secondary brand elements",
-              "Brand voice guide",
+              "5–8 pages all devices",
+              "Full design system (tokens + components)",
+              "Figma with variants",
+              "Dev-ready handoff + asset export",
+              "3 revisions",
             ],
           },
           {
@@ -1069,52 +1353,50 @@ const PILLARS: PillarDef[] = [
             price: "$3,000",
             delivery: "10–14 days",
             deliverables: [
-              "Complete brand system",
-              "Pattern/texture + photography style guide",
-              "Custom icon set",
-              "Brand application mockups (10+)",
-              "Full source files",
+              "Full product design — unlimited pages",
+              "Design system with all states",
+              "User flow diagrams",
+              "Prototype + usability notes",
+              "Dev handoff to Connor's build",
             ],
           },
         ],
       },
       {
-        id: "5D",
-        name: "Website Design & Development",
+        id: "6G",
+        name: "Motion Logo & Brand Animation",
+        intro:
+          "The static logo, animated. Broadcast-ready motion assets for every format your brand needs.",
         tiers: [
           {
             name: "Starter",
-            price: "$500",
-            delivery: "5–7 days",
+            price: "$200",
+            delivery: "2–3 days",
             deliverables: [
-              "3-page site (Home / About / Contact)",
-              "Contact form + mobile responsive",
-              "Basic SEO",
-              "Cloudflare hosting setup",
+              "Animated logo reveal (5 sec)",
+              "MP4 + WEBM",
+              "Transparent background version",
             ],
           },
           {
             name: "Professional",
-            price: "$1,500",
-            delivery: "10–14 days",
+            price: "$500",
+            delivery: "3–5 days",
             deliverables: [
-              "6-page website",
-              "Lead capture funnel",
-              "Google Maps + full SEO setup",
-              "GA4 analytics + domain/DNS configuration",
-              "Unlimited revisions",
+              "Animated logo + lower thirds + intro/outro bumper",
+              "All formats",
+              "2 style variations",
             ],
           },
           {
             name: "Enterprise",
-            price: "$3,000",
-            delivery: "18–25 days",
+            price: "$1,000",
+            delivery: "5–8 days",
             deliverables: [
-              "8+ page website",
-              "CRM integration + blog setup",
-              "AI chatbot integration",
-              "Advanced SEO + performance optimization",
-              "30-day post-launch support",
+              "Full brand motion kit",
+              "Animated logo + lower thirds + transitions + social animations + intro/outro",
+              "All MP4/WEBM formats",
+              "Complete brand motion package",
             ],
           },
         ],
