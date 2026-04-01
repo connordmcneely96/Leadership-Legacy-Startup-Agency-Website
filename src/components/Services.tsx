@@ -25,6 +25,7 @@ type PillarDef = {
   fullName: string;
   Icon: React.ComponentType<{ className?: string }>;
   badge?: string;
+  intro?: string;
   services: ServiceDef[];
 };
 
@@ -533,6 +534,8 @@ const PILLARS: PillarDef[] = [
     fullName: "AI Fitness & Body Composition Platforms",
     Icon: Dumbbell,
     badge: "Category Exclusive",
+    intro:
+      "The only AI development team on any platform that combines 15 years of elite competitive natural bodybuilding with full-stack AI engineering. No fitness app agency knows this science from the inside. No fitness coach knows this tech stack. We do both.",
     services: [
       {
         id: "3A",
@@ -558,7 +561,7 @@ const PILLARS: PillarDef[] = [
               "Full AI coaching platform",
               "Multi-client management",
               "Adaptive program logic + nutrition tracking",
-              "AI chat coach + progress photo analysis",
+              "AI chat coach (Claude/GPT-4) + progress photo analysis",
               "Coach admin dashboard",
               "Calendly + Stripe + email integrations + 60-day support",
             ],
@@ -630,52 +633,59 @@ const PILLARS: PillarDef[] = [
     fullName: "CAD Engineering & AI Video",
     Icon: Wrench,
     badge: "Category Exclusive",
+    intro:
+      "Fewer than 50 credible engineering specialists exist on all platforms for this work. API 610/682 credentials, 15+ years on industrial equipment for Tesla, Pfizer, and John Deere — combined with AI video production capability that no other engineer on any platform offers.",
     services: [
       {
         id: "4A",
         name: "CAD-to-AI Product Demo Video",
+        intro:
+          "Turn your SolidWorks or STEP files into a professional narrated product demo. No other engineering team on any platform can deliver this combination.",
         tiers: [
           {
             name: "Starter",
-            price: "$800",
-            delivery: "5–7 days",
+            price: "$500",
+            delivery: "5–10 days",
             deliverables: [
-              "3 rendered views from CAD model",
-              "AI-narrated script",
-              "60-second 1080p video",
-              "1 revision round",
+              "30–60 sec AI-narrated video from client CAD/STEP files",
+              "Script written from technical content",
+              "AI voiceover + visuals",
+              "1080p MP4",
+              "1 revision",
             ],
           },
           {
             name: "Professional",
-            price: "$2,000",
+            price: "$800",
             delivery: "10–14 days",
             deliverables: [
-              "8 rendered views + exploded assembly animation",
-              "2-minute 1080p video",
+              "2–5 min technical explainer",
+              "Script from engineering specs/CAD",
+              "AI video + engineering visual overlays",
+              "Subtitle/caption track",
               "Branded intro/outro",
-              "Lower thirds with engineering specs",
-              "3 revision rounds",
+              "2 revision rounds",
+              "LinkedIn/YouTube optimized",
             ],
           },
           {
             name: "Enterprise",
-            price: "$4,000",
-            delivery: "18–25 days",
+            price: "$3,000",
+            delivery: "3–6 weeks",
             deliverables: [
-              "Full render suite + motion assembly animation",
-              "3-minute 4K video",
-              "All format exports (16:9 / 9:16 / 1:1)",
-              "Source files included",
-              "Unlimited revisions",
-              "Trade show package",
+              "5–15 video series from P&IDs/CAD/technical specs",
+              "Custom AI avatar/narrator",
+              "Equipment training modules",
+              "Sales enablement package",
+              "All format exports",
+              "Monthly retainer option",
             ],
           },
         ],
       },
       {
         id: "4B",
-        name: "CAD Modeling (SolidWorks / FreeCAD)",
+        name: "3D CAD Modeling (FreeCAD / SolidWorks)",
         tiers: [
           {
             name: "Starter",
@@ -703,7 +713,7 @@ const PILLARS: PillarDef[] = [
           {
             name: "Enterprise",
             price: "$1,500",
-            delivery: "14–30 days",
+            delivery: "7–14 days",
             deliverables: [
               "Full industrial machine or equipment skid",
               "Vendor-spec integration",
@@ -716,7 +726,7 @@ const PILLARS: PillarDef[] = [
       },
       {
         id: "4C",
-        name: "Engineering Drawing Packages",
+        name: "2D Engineering Drawings & GD&T",
         tiers: [
           {
             name: "Starter",
@@ -757,7 +767,7 @@ const PILLARS: PillarDef[] = [
       },
       {
         id: "4D",
-        name: "FEA / Structural Simulation",
+        name: "FEA & Structural Simulation",
         tiers: [
           {
             name: "Starter",
@@ -799,11 +809,141 @@ const PILLARS: PillarDef[] = [
       },
       {
         id: "4E",
+        name: "Engineering Code Calculations",
+        intro:
+          "Code-compliant calculations delivered fast — with referenced standards, documented inputs, and safety factors your reviewers won't question.",
+        tiers: [
+          {
+            name: "Starter",
+            price: "$200",
+            delivery: "24–48 hrs",
+            deliverables: [
+              "1 focused calculation (bolt sizing, beam, bearing, or pump hydraulic)",
+              "Excel/PDF deliverable",
+              "Input variables documented",
+              "Result with safety factor + code reference",
+            ],
+          },
+          {
+            name: "Professional",
+            price: "$500",
+            delivery: "3–7 days",
+            deliverables: [
+              "3–8 interdependent calculations",
+              "Formatted engineering report",
+              "Code references cited (ASME/AISC/API)",
+              "Sensitivity analysis",
+              "Design recommendations",
+            ],
+          },
+          {
+            name: "Enterprise",
+            price: "$2,500",
+            delivery: "7–21 days",
+            deliverables: [
+              "Complete basis of design",
+              "10–50 calculation sheets",
+              "PE stamp coordination support",
+              "Code compliance checklist",
+              "Client-editable Excel package",
+            ],
+          },
+        ],
+      },
+      {
+        id: "4F",
         name: "API 610/682 Rotating Equipment Engineering",
         customQuote: {
-          copy: "Full pump specification packages, hydraulic sizing and curve analysis, mechanical seal system design, seal flush plans (Plan 11/21/32/53A), vendor TBE, and API 610/682 compliance documentation. Project rates from $2,500. Retainer engagements available.",
+          copy: "Full pump specification packages, hydraulic sizing and curve analysis, mechanical seal system design (API 682), seal flush plans (Plan 11/21/32/53A), vendor TBE and API 610 compliance documentation. Entry reviews from $500. Project engineering from $2,500. Retainer and program engagements available for EPCs and owner-operators.",
           cta: "Request Scope",
         },
+      },
+      {
+        id: "4G",
+        name: "Pressure Vessel & Piping Engineering",
+        intro:
+          "ASME VIII and B31.3 calculations built for fabrication, review, and stamp — not just for show.",
+        tiers: [
+          {
+            name: "Starter",
+            price: "$400",
+            delivery: "3–7 days",
+            deliverables: [
+              "Shell wall thickness (ASME VIII Div.1)",
+              "Head selection",
+              "Nozzle reinforcement check",
+              "MAWP determination",
+              "1-page calculation summary",
+            ],
+          },
+          {
+            name: "Professional",
+            price: "$2,000",
+            delivery: "2–4 weeks",
+            deliverables: [
+              "Full ASME VIII Div.1 design calcs",
+              "All nozzle loads + reinforcement",
+              "Support / saddle / skirt design",
+              "Wind + seismic loading",
+              "Stamped datasheet prep",
+            ],
+          },
+          {
+            name: "Enterprise",
+            price: "$5,000",
+            delivery: "4–8 weeks",
+            deliverables: [
+              "B31.3 piping stress analysis",
+              "Flexibility / expansion loop design",
+              "Support span calcs",
+              "Vessel + piping system integration",
+              "Isometric drawing package",
+            ],
+          },
+        ],
+      },
+      {
+        id: "4H",
+        name: "P&ID Design & Process Engineering",
+        intro:
+          "ISA 5.1-compliant P&IDs built for HAZOP, handoff, and construction — from single loops to complete FEED packages.",
+        tiers: [
+          {
+            name: "Starter",
+            price: "$300",
+            delivery: "3–5 days",
+            deliverables: [
+              "Single loop or unit operation",
+              "ISA 5.1 symbology",
+              "Editable PDF + source file",
+              "Instrument tag list",
+            ],
+          },
+          {
+            name: "Professional",
+            price: "$1,500",
+            delivery: "5–14 days",
+            deliverables: [
+              "Multi-unit P&ID package",
+              "Equipment numbering + tagging",
+              "Line list generation",
+              "HAZOP-ready format",
+              "Control philosophy notes",
+            ],
+          },
+          {
+            name: "Enterprise",
+            price: "$5,000",
+            delivery: "2–6 weeks",
+            deliverables: [
+              "Complete FEED package",
+              "Process flow diagrams + equipment specs",
+              "HAZOP facilitation support",
+              "Instrument index + line list",
+              "Cause & effect matrix",
+            ],
+          },
+        ],
       },
     ],
   },
@@ -1106,16 +1246,23 @@ export default function Services() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.25 }}
-            className="flex items-center gap-3 mb-8"
+            className="mb-8"
           >
-            <h3 className="text-xl lg:text-2xl font-semibold text-foreground">
-              {pillar.fullName}
-            </h3>
-            {pillar.badge && (
-              <span className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-gold/10 text-gold border border-gold/20">
-                <Star className="w-3 h-3 fill-gold" />
-                {pillar.badge}
-              </span>
+            <div className={`flex items-center gap-3 ${pillar.intro ? "mb-4" : ""}`}>
+              <h3 className="text-xl lg:text-2xl font-semibold text-foreground">
+                {pillar.fullName}
+              </h3>
+              {pillar.badge && (
+                <span className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-gold/10 text-gold border border-gold/20">
+                  <Star className="w-3 h-3 fill-gold" />
+                  {pillar.badge}
+                </span>
+              )}
+            </div>
+            {pillar.intro && (
+              <p className="text-sm lg:text-base text-muted-foreground leading-relaxed max-w-3xl border-l-2 border-gold/30 pl-4">
+                {pillar.intro}
+              </p>
             )}
           </motion.div>
         </AnimatePresence>
