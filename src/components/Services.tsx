@@ -799,11 +799,141 @@ const PILLARS: PillarDef[] = [
       },
       {
         id: "4E",
+        name: "Engineering Code Calculations",
+        intro:
+          "Code-compliant calculations delivered fast — with referenced standards, documented inputs, and safety factors your reviewers won't question.",
+        tiers: [
+          {
+            name: "Starter",
+            price: "$200",
+            delivery: "24–48 hrs",
+            deliverables: [
+              "1 focused calculation (bolt sizing, beam, bearing, or pump hydraulic)",
+              "Excel/PDF deliverable",
+              "Input variables documented",
+              "Result with safety factor + code reference",
+            ],
+          },
+          {
+            name: "Professional",
+            price: "$500",
+            delivery: "3–7 days",
+            deliverables: [
+              "3–8 interdependent calculations",
+              "Formatted engineering report",
+              "Code references cited (ASME/AISC/API)",
+              "Sensitivity analysis",
+              "Design recommendations",
+            ],
+          },
+          {
+            name: "Enterprise",
+            price: "$2,500",
+            delivery: "7–21 days",
+            deliverables: [
+              "Complete basis of design",
+              "10–50 calculation sheets",
+              "PE stamp coordination support",
+              "Code compliance checklist",
+              "Client-editable Excel package",
+            ],
+          },
+        ],
+      },
+      {
+        id: "4F",
         name: "API 610/682 Rotating Equipment Engineering",
         customQuote: {
-          copy: "Full pump specification packages, hydraulic sizing and curve analysis, mechanical seal system design, seal flush plans (Plan 11/21/32/53A), vendor TBE, and API 610/682 compliance documentation. Project rates from $2,500. Retainer engagements available.",
+          copy: "Full pump specification packages, hydraulic sizing and curve analysis, mechanical seal system design (API 682), seal flush plans (Plan 11/21/32/53A), vendor TBE and API 610 compliance documentation. Entry reviews from $500. Project engineering from $2,500. Retainer and program engagements available for EPCs and owner-operators.",
           cta: "Request Scope",
         },
+      },
+      {
+        id: "4G",
+        name: "Pressure Vessel & Piping Engineering",
+        intro:
+          "ASME VIII and B31.3 calculations built for fabrication, review, and stamp — not just for show.",
+        tiers: [
+          {
+            name: "Starter",
+            price: "$400",
+            delivery: "3–7 days",
+            deliverables: [
+              "Shell wall thickness (ASME VIII Div.1)",
+              "Head selection",
+              "Nozzle reinforcement check",
+              "MAWP determination",
+              "1-page calculation summary",
+            ],
+          },
+          {
+            name: "Professional",
+            price: "$2,000",
+            delivery: "2–4 weeks",
+            deliverables: [
+              "Full ASME VIII Div.1 design calcs",
+              "All nozzle loads + reinforcement",
+              "Support / saddle / skirt design",
+              "Wind + seismic loading",
+              "Stamped datasheet prep",
+            ],
+          },
+          {
+            name: "Enterprise",
+            price: "$5,000",
+            delivery: "4–8 weeks",
+            deliverables: [
+              "B31.3 piping stress analysis",
+              "Flexibility / expansion loop design",
+              "Support span calcs",
+              "Vessel + piping system integration",
+              "Isometric drawing package",
+            ],
+          },
+        ],
+      },
+      {
+        id: "4H",
+        name: "P&ID Design & Process Engineering",
+        intro:
+          "ISA 5.1-compliant P&IDs built for HAZOP, handoff, and construction — from single loops to complete FEED packages.",
+        tiers: [
+          {
+            name: "Starter",
+            price: "$300",
+            delivery: "3–5 days",
+            deliverables: [
+              "Single loop or unit operation",
+              "ISA 5.1 symbology",
+              "Editable PDF + source file",
+              "Instrument tag list",
+            ],
+          },
+          {
+            name: "Professional",
+            price: "$1,500",
+            delivery: "5–14 days",
+            deliverables: [
+              "Multi-unit P&ID package",
+              "Equipment numbering + tagging",
+              "Line list generation",
+              "HAZOP-ready format",
+              "Control philosophy notes",
+            ],
+          },
+          {
+            name: "Enterprise",
+            price: "$5,000",
+            delivery: "2–6 weeks",
+            deliverables: [
+              "Complete FEED package",
+              "Process flow diagrams + equipment specs",
+              "HAZOP facilitation support",
+              "Instrument index + line list",
+              "Cause & effect matrix",
+            ],
+          },
+        ],
       },
     ],
   },
