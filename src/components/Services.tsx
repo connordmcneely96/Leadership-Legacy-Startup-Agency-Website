@@ -391,7 +391,7 @@ const PILLARS: PillarDef[] = [
   {
     id: 2,
     shortName: "AI SaaS & Web Apps",
-    fullName: "AI SaaS & Web Application Development",
+    fullName: "AI SaaS & Web Applications",
     Icon: Rocket,
     services: [
       {
