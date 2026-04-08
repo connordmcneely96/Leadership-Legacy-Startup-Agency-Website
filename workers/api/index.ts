@@ -8,6 +8,16 @@ import type {
   ExecutionContext,
 } from "@cloudflare/workers-types";
 
+import {
+  handleLogin,
+  handleRegister,
+  handleLogout,
+  handleMe,
+  handleMagicLink,
+  handleVerifyMagicLink,
+  handleSetup,
+} from "./routes/auth";
+
 export interface Env {
   DB: D1Database;
   ASSETS?: R2Bucket; // legacy binding name
@@ -15,6 +25,7 @@ export interface Env {
   CONFIG: KVNamespace;
   ANTHROPIC_API_KEY?: string;
   RESEND_API_KEY?: string;
+  JWT_SECRET: string;
   RATE_LIMITER: any;
   AI: any; // Cloudflare Workers AI
   ENVIRONMENT: string;
@@ -45,6 +56,29 @@ export default {
     }
 
     try {
+      // ---- Authentication routes ----
+      if (url.pathname === '/api/auth/login' && request.method === 'POST') {
+        return await handleLogin(request, env);
+      }
+      if (url.pathname === '/api/auth/register' && request.method === 'POST') {
+        return await handleRegister(request, env);
+      }
+      if (url.pathname === '/api/auth/logout' && request.method === 'POST') {
+        return await handleLogout(request, env);
+      }
+      if (url.pathname === '/api/auth/me' && request.method === 'GET') {
+        return await handleMe(request, env);
+      }
+      if (url.pathname === '/api/auth/magic-link' && request.method === 'POST') {
+        return await handleMagicLink(request, env);
+      }
+      if (url.pathname === '/api/auth/verify-magic-link' && request.method === 'POST') {
+        return await handleVerifyMagicLink(request, env);
+      }
+      if (url.pathname === '/api/auth/setup' && request.method === 'POST') {
+        return await handleSetup(request, env);
+      }
+
       // Route to appropriate handler
       if (url.pathname === '/api/contact' && request.method === 'POST') {
         return await handleContact(request, env);
