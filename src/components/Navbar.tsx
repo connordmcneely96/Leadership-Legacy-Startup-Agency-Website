@@ -2,12 +2,11 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, Sparkles } from "lucide-react";
+import { Menu, X, Sparkles, LogIn, LogOut } from "lucide-react";
 import Link from "next/link";
+import { useAuth } from "@/lib/auth-context";
 
-const navLinks = [
-  { name: "Dashboard", href: "/dashboard" },
-  { name: "Workflow Suite Apps", href: "/suite" },
+const publicLinks = [
   { name: "Services", href: "#services" },
   { name: "Portfolio", href: "#portfolio" },
   { name: "Process", href: "#process" },
@@ -16,9 +15,19 @@ const navLinks = [
   { name: "Contact", href: "#contact" },
 ];
 
+const protectedLinks = [
+  { name: "Dashboard", href: "/dashboard" },
+  { name: "Workflow Suite Apps", href: "/suite" },
+];
+
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { isAuthenticated, logout, user } = useAuth();
+
+  const navLinks = isAuthenticated
+    ? [...protectedLinks, ...publicLinks]
+    : publicLinks;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -69,8 +78,30 @@ export default function Navbar() {
               ))}
             </div>
 
-            {/* CTA Button */}
-            <div className="hidden lg:flex items-center gap-4">
+            {/* CTA / Auth Buttons */}
+            <div className="hidden lg:flex items-center gap-3">
+              {isAuthenticated ? (
+                <>
+                  <span className="text-xs text-muted-foreground">
+                    {user?.firstName || user?.email}
+                  </span>
+                  <button
+                    onClick={() => logout()}
+                    className="flex items-center gap-1.5 px-4 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    Sign Out
+                  </button>
+                </>
+              ) : (
+                <Link
+                  href="/login"
+                  className="flex items-center gap-1.5 px-5 py-2.5 text-sm font-medium bg-gold text-navy rounded-full hover:bg-gold-light transition-colors"
+                >
+                  <LogIn className="w-4 h-4" />
+                  Sign In
+                </Link>
+              )}
               <Link
                 href="#contact"
                 className="px-6 py-2.5 text-sm font-medium bg-gold text-navy rounded-full hover:bg-gold-light transition-colors"
@@ -131,12 +162,33 @@ export default function Navbar() {
                   </Link>
                 </motion.div>
               ))}
+
+              {/* Mobile Auth */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3, delay: 0.4 }}
-                className="mt-6"
+                className="mt-4 flex flex-col gap-3"
               >
+                {isAuthenticated ? (
+                  <button
+                    onClick={() => {
+                      logout();
+                      setIsMobileMenuOpen(false);
+                    }}
+                    className="block w-full py-4 text-center text-lg font-medium border border-white/20 text-foreground rounded-full hover:bg-white/5 transition-colors"
+                  >
+                    Sign Out
+                  </button>
+                ) : (
+                  <Link
+                    href="/login"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="block w-full py-4 text-center text-lg font-medium border border-gold/50 text-gold rounded-full hover:bg-gold/10 transition-colors"
+                  >
+                    Sign In
+                  </Link>
+                )}
                 <Link
                   href="#contact"
                   onClick={() => setIsMobileMenuOpen(false)}
@@ -152,4 +204,3 @@ export default function Navbar() {
     </>
   );
 }
-

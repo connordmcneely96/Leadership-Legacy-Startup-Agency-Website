@@ -34,6 +34,7 @@ id = "a82cf78ed3eb4422b6ac86c4891d76d5"
 [vars]
 ENVIRONMENT = "development"
 NEXT_PUBLIC_API_URL = "https://leadership-legacy.YOUR_SUBDOMAIN.workers.dev"
+JWT_SECRET = "change-this-to-a-secure-random-string-in-production"
 
 # Production environment
 [env.production]

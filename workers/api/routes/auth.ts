@@ -468,6 +468,62 @@ export async function handleLogout(request: Request, env: Env): Promise<Response
 }
 
 /**
+ * Setup initial admin user (one-time only)
+ * POST /api/auth/setup
+ * Creates the admin user if no admin exists yet
+ */
+export async function handleSetup(request: Request, env: Env): Promise<Response> {
+  try {
+    const data = await request.json() as {
+      email: string;
+      password: string;
+      firstName: string;
+      lastName: string;
+    };
+
+    const validation = validateRequired(data, ['email', 'password', 'firstName', 'lastName']);
+    if (!validation.valid) {
+      return new Response(
+        JSON.stringify({ error: 'Missing required fields', missing: validation.missing }),
+        { status: 400, headers: { 'Content-Type': 'application/json', ...CORS_HEADERS } }
+      );
+    }
+
+    // Check if any admin user already exists
+    const existingAdmin = await env.DB.prepare(
+      `SELECT id FROM users WHERE role = 'admin' LIMIT 1`
+    ).first();
+
+    if (existingAdmin) {
+      return new Response(
+        JSON.stringify({ error: 'Admin user already exists. Setup can only be run once.' }),
+        { status: 409, headers: { 'Content-Type': 'application/json', ...CORS_HEADERS } }
+      );
+    }
+
+    const passwordHash = await hashPassword(data.password);
+
+    await env.DB.prepare(`
+      INSERT INTO users (email, password_hash, role, first_name, last_name, is_active, email_verified)
+      VALUES (?, ?, 'admin', ?, ?, 1, 1)
+    `)
+      .bind(data.email, passwordHash, data.firstName, data.lastName)
+      .run();
+
+    return new Response(
+      JSON.stringify({ success: true, message: 'Admin user created successfully' }),
+      { headers: { 'Content-Type': 'application/json', ...CORS_HEADERS } }
+    );
+  } catch (error) {
+    console.error('Setup error:', error);
+    return new Response(
+      JSON.stringify({ error: 'Failed to setup admin user' }),
+      { status: 500, headers: { 'Content-Type': 'application/json', ...CORS_HEADERS } }
+    );
+  }
+}
+
+/**
  * Get current user
  * GET /api/auth/me
  */
