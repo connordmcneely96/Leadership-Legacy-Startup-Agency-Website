@@ -59,7 +59,7 @@ const retainers = [
 
 export default function RetainerServices() {
   return (
-    <section className="relative py-24 lg:py-32 overflow-hidden">
+    <section id="retainers" className="relative py-24 lg:py-32 overflow-hidden">
       <div className="absolute inset-0 bg-navy-dark" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-gold/5 via-transparent to-transparent" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_var(--tw-gradient-stops))] from-blue/5 via-transparent to-transparent" />

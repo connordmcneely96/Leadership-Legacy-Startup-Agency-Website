@@ -7,12 +7,13 @@ import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
 
 const publicLinks = [
-  { name: "Services", href: "#services" },
-  { name: "Portfolio", href: "#portfolio" },
-  { name: "Process", href: "#process" },
-  { name: "Pricing", href: "#pricing" },
-  { name: "About", href: "#about" },
-  { name: "Contact", href: "#contact" },
+  { name: "Services", href: "/#services" },
+  { name: "Portfolio", href: "/#portfolio" },
+  { name: "Process", href: "/#process" },
+  { name: "Pricing", href: "/#pricing" },
+  { name: "About", href: "/#about" },
+  { name: "Resources", href: "/resources" },
+  { name: "Contact", href: "/#contact" },
 ];
 
 const protectedLinks = [
@@ -55,7 +56,7 @@ export default function Navbar() {
                 <Sparkles className="w-5 h-5 text-navy" />
               </div>
               <div className="flex flex-col">
-                <span className="text-lg font-semibold tracking-tight text-foreground">
+                <span className="text-lg font-semibold tracking-tight whitespace-nowrap text-foreground">
                   Leadership Legacy
                 </span>
                 <span className="text-xs text-muted-foreground -mt-0.5">
@@ -70,7 +71,7 @@ export default function Navbar() {
                 <Link
                   key={link.name}
                   href={link.href}
-                  className="relative px-4 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors group"
+                  className="relative px-2 xl:px-4 py-2 text-sm whitespace-nowrap text-muted-foreground hover:text-foreground transition-colors group"
                 >
                   {link.name}
                   <span className="absolute bottom-1 left-4 right-4 h-px bg-gold scale-x-0 group-hover:scale-x-100 transition-transform origin-left" />
@@ -96,15 +97,15 @@ export default function Navbar() {
               ) : (
                 <Link
                   href="/login"
-                  className="flex items-center gap-1.5 px-5 py-2.5 text-sm font-medium bg-gold text-navy rounded-full hover:bg-gold-light transition-colors"
+                  className="flex items-center gap-1.5 px-4 xl:px-5 py-2.5 text-sm font-medium whitespace-nowrap bg-gold text-navy rounded-full hover:bg-gold-light transition-colors"
                 >
                   <LogIn className="w-4 h-4" />
                   Sign In
                 </Link>
               )}
               <Link
-                href="#contact"
-                className="px-6 py-2.5 text-sm font-medium bg-gold text-navy rounded-full hover:bg-gold-light transition-colors"
+                href="/#contact"
+                className="px-4 xl:px-6 py-2.5 text-sm font-medium whitespace-nowrap bg-gold text-navy rounded-full hover:bg-gold-light transition-colors"
               >
                 Book Discovery Call
               </Link>
@@ -190,7 +191,7 @@ export default function Navbar() {
                   </Link>
                 )}
                 <Link
-                  href="#contact"
+                  href="/#contact"
                   onClick={() => setIsMobileMenuOpen(false)}
                   className="block w-full py-4 text-center text-lg font-medium bg-gold text-navy rounded-full hover:bg-gold-light transition-colors"
                 >
