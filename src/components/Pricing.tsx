@@ -64,13 +64,13 @@ export default function Pricing() {
           className="text-center max-w-3xl mx-auto mb-16"
         >
           <span className="text-sm font-medium text-gold uppercase tracking-wider">
-            Investment
+            Done-for-you projects
           </span>
           <h2 className="mt-4 text-3xl lg:text-5xl font-serif font-semibold">
             Transparent Pricing, No Guesswork
           </h2>
           <p className="mt-6 text-lg text-muted-foreground">
-            Every service has fixed Starter, Professional, and Enterprise tiers with exact pricing. View the full breakdown in our Services section above.
+            Every service has fixed Starter, Standard, and Advanced tiers with exact pricing. View the full breakdown in our Services section above.
           </p>
         </motion.div>
 

@@ -1,6 +1,8 @@
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import WhoWeHelp from "@/components/WhoWeHelp";
+import Ladder from "@/components/Ladder";
+import Membership from "@/components/Membership";
 import Services from "@/components/Services";
 import WebDevelopment from "@/components/WebDevelopment";
 import Creative from "@/components/Creative";
@@ -20,11 +22,13 @@ export default function Home() {
       <Navbar />
       <Hero />
       <WhoWeHelp />
+      <Ladder />
       <Services />
       <WebDevelopment />
       <Creative />
       <Process />
       <Outcomes />
+      <Membership />
       <Pricing />
       <Presentation />
       <About />
