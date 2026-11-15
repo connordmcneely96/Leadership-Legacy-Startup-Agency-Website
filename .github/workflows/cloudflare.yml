@@ -17,6 +17,7 @@ jobs:
       CF_KV_NAMESPACE_ID: ${{ secrets.CF_KV_NAMESPACE_ID }}
       CF_PAGES_PROJECT: ${{ secrets.CF_PAGES_PROJECT }}
       NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -42,8 +43,20 @@ jobs:
           sed -i "s/KV_NAMESPACE_ID_PLACEHOLDER/${CF_KV_NAMESPACE_ID}/g" wrangler.prod.toml
         shell: bash
 
+      # The Worker falls back to a public default when JWT_SECRET is missing.
+      # Refuse to deploy rather than ship that.
+      - name: Require JWT_SECRET
+        run: |
+          if [ -z "$JWT_SECRET" ]; then
+            echo "::error::JWT_SECRET GitHub secret is not set. Not deploying the Worker."
+            exit 1
+          fi
+
       - name: Deploy Cloudflare Worker API
         run: npx wrangler deploy --config wrangler.prod.toml --env production
+
+      - name: Set Worker JWT secret
+        run: printf '%s' "$JWT_SECRET" | npx wrangler secret put JWT_SECRET --config wrangler.prod.toml --env production
 
       - name: Deploy Cloudflare Pages
         env:

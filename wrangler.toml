@@ -31,12 +31,33 @@ binding = "CONFIG"
 id = "a82cf78ed3eb4422b6ac86c4891d76d5"
 
 # Environment variables
+# JWT_SECRET is NOT set here. It is a Worker secret:
+#   production: set from the JWT_SECRET GitHub secret by .github/workflows/cloudflare.yml
+#   local dev:  add JWT_SECRET to an untracked .dev.vars.local / your shell, never commit it
 [vars]
 ENVIRONMENT = "development"
 NEXT_PUBLIC_API_URL = "https://leadership-legacy.YOUR_SUBDOMAIN.workers.dev"
-JWT_SECRET = "change-this-to-a-secure-random-string-in-production"
 
 # Production environment
+# Bindings are not inherited by environments, so they are repeated here.
 [env.production]
 name = "leadership-legacy-production"
-vars = { ENVIRONMENT = "production" }
+
+[env.production.vars]
+ENVIRONMENT = "production"
+
+[[env.production.d1_databases]]
+binding = "DB"
+database_name = "leadership-legacy-db"
+database_id = "c593cef5-5921-4016-93c6-75361de39b2a"
+
+[[env.production.r2_buckets]]
+binding = "R2_ASSETS"
+bucket_name = "leadership-legacy-assets"
+
+[env.production.ai]
+binding = "AI"
+
+[[env.production.kv_namespaces]]
+binding = "CONFIG"
+id = "a82cf78ed3eb4422b6ac86c4891d76d5"
